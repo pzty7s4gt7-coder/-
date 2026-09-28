@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#4f9d4b">
+<title>うさぎのにわ</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #4f9d4b;
+    overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #game {
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: block;
+    touch-action: none;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<!-- core -->
+<script src="js/core.js"></script>
+<script src="js/palette.js"></script>
+<script src="js/font.js"></script>
+<!-- hand-typed pixel art -->
+<script src="js/art/rabbit.js"></script>
+<script src="js/art/field.js"></script>
+<script src="js/art/items.js"></script>
+<script src="js/art/ui.js"></script>
+<!-- engine & world -->
+<script src="js/engine.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/world.js"></script>
+<!-- things that live in the meadow -->
+<script src="js/entities/carrot.js"></script>
+<script src="js/entities/ball.js"></script>
+<script src="js/entities/critters.js"></script>
+<script src="js/rabbit.js"></script>
+<!-- ui & boot -->
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprite Sheet</title>
+<style>
+  body { margin: 0; padding: 12px; background: #4f9d4b; font: 12px monospace; color: #fff; }
+  h2 { margin: 16px 0 6px; font-size: 13px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  figure { margin: 0; text-align: center; }
+  canvas { image-rendering: pixelated; background: #3c8544; display: block; }
+  figcaption { font-size: 10px; margin-top: 2px; }
+  #font { background: #2a1f2d; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="../js/core.js"></script>
+<script src="../js/palette.js"></script>
+<script src="../js/font.js"></script>
+<script src="../js/art/rabbit.js"></script>
+<script src="../js/art/field.js"></script>
+<script src="../js/art/items.js"></script>
+<script src="../js/art/ui.js"></script>
+<script>
+  // Dev viewer: every sprite in U.S at 8x, plus a dot-font sample.
+  const Z = +(new URLSearchParams(location.search).get('z') || 8);
+  const only = new URLSearchParams(location.search).get('only');
+  const root = document.getElementById('root');
+  function show(name, s) {
+    const c = document.createElement('canvas');
+    c.width = s.w * Z; c.height = s.h * Z;
+    c.style.width = c.width + 'px';
+    const x = c.getContext('2d');
+    x.imageSmoothingEnabled = false;
+    x.drawImage(s.c, 0, 0, c.width, c.height);
+    const f = document.createElement('figure');
+    f.appendChild(c);
+    const cap = document.createElement('figcaption');
+    cap.textContent = name;
+    f.appendChild(cap);
+    return f;
+  }
+  for (const group in U.S) {
+    if (only && only.split(',').indexOf(group) < 0) continue;
+    const h = document.createElement('h2'); h.textContent = group; root.appendChild(h);
+    const g = document.createElement('div'); g.className = 'grid'; root.appendChild(g);
+    const v = U.S[group];
+    const walk = (prefix, o) => {
+      if (!o) return;
+      if (o.c && o.w) { g.appendChild(show(prefix, o)); return; }
+      for (const k in o) walk(prefix ? prefix + '.' + k : k, o[k]);
+    };
+    walk('', v);
+  }
+  if (U.font && (!only || only.indexOf('font') >= 0)) {
+    const h = document.createElement('h2'); h.textContent = 'font'; root.appendChild(h);
+    const lines = [
+      'アイウエオ カキクケコ サシスセソ',
+      'タチツテト ナニヌネノ ハヒフヘホ',
+      'マミムメモ ヤユヨ ラリルレロ ワヲン',
+      'ガギグゲゴ ザジズゼゾ ダヂヅデド',
+      'バビブベボ パピプペポ ァィゥェォ ッャュョ ヴー',
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      '0123456789 :.,!?-+/()%',
+      'ウサギ モグモグ スヤスヤ ピョンピョン',
+      'ニンジン ボール ジカン 12:34',
+    ];
+    const Wd = 180, Hd = lines.length * 10 + 4;
+    const c = U.makeCanvas(Wd, Hd);
+    const x = c.getContext('2d');
+    x.fillStyle = '#2a1f2d'; x.fillRect(0, 0, Wd, Hd);
+    lines.forEach((l, i) => U.font.draw(x, l, 2, 2 + i * 10, '#fff4df'));
+    const big = document.createElement('canvas');
+    big.width = Wd * 4; big.height = Hd * 4; big.id = 'font';
+    const bx = big.getContext('2d'); bx.imageSmoothingEnabled = false;
+    bx.drawImage(c, 0, 0, big.width, big.height);
+    root.appendChild(big);
+  }
+</script>
+</body>
+</html>
