@@ -174,7 +174,10 @@
     panel.appendChild(h('h3', { text: 'セーブ' }));
     panel.appendChild(h('div', { class: 'row' }, [
       btn('セーブ', () => GM.save()),
-      btn('ぜんぶ けす（さいしょから）', () => { if (confirm('セーブデータを けしますか？')) { GM.reset(); TM.sc.go('home'); } }),
+      btn(D.armReset ? 'ほんとうに けす？（もういちど おす）' : 'ぜんぶ けす（さいしょから）', () => {
+        if (!D.armReset) { D.armReset = true; setTimeout(() => { D.armReset = false; D.refresh(); }, 4000); return; }
+        D.armReset = false; GM.reset(); TM.sc.go('home');
+      }),
     ]));
   };
 

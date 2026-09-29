@@ -41,3 +41,6 @@ TM.register('place', ...) TM.register('character', ...)  TM.register('icon', ...
 - `fonts/` DotGothic16（SIL OFL 1.1）
 
 ※ 非公式のファンメイド作品です。
+
+## スマホで遊ぶ
+`node tamagotchi/tools/build.js` で1ファイル版 `tamagotchi/dist/tamamiitsu.html` を作れます（公開用）。

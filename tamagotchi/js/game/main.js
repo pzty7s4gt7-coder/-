@@ -47,8 +47,8 @@
   function fitScreen() {
     const cv = document.getElementById('screen');
     const box = cv.parentElement;
-    const cs = getComputedStyle(box);
-    const avail = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    // leave a thin dark bezel around the screen; the canvas is centred by CSS
+    const avail = Math.min(box.clientWidth, box.clientHeight) * 0.94;
     const dpr = window.devicePixelRatio || 1;
     // integer number of device pixels per world pixel => perfectly even dots
     const s = Math.max(1, Math.floor((avail * dpr) / TM.W));

@@ -1,0 +1,5041 @@
+<title>たまみーつ</title>
+<meta name="theme-color" content="#ffd6ea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
+<style>
+/* DotGothic16 (SIL OFL 1.1, see fonts/OFL.txt) — bundled so the game works offline */
+
+:root {
+  --bg: #fff3f9;
+  --bg2: #ffe3f1;
+  --shell: #ffb6d6;
+  --shell-hi: #ffe0ee;
+  --shell-lo: #f07aad;
+  --frame: #b995f2;
+  --frame-lo: #8d63d6;
+  --ink: #4a2f60;
+  --btn: #fff27e;
+  --btn-lo: #e2b93a;
+  --panel: #ffffff;
+  --line: #f3cfe2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #251b33;
+    --bg2: #2e2140;
+    --ink: #f3e6ff;
+    --panel: #2f2542;
+    --line: #4a3a60;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #251b33;
+  --bg2: #2e2140;
+  --ink: #f3e6ff;
+  --panel: #2f2542;
+  --line: #4a3a60;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  background-image: radial-gradient(var(--bg2) 18%, transparent 19%), radial-gradient(var(--bg2) 18%, transparent 19%);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+  color: var(--ink);
+  font-family: "DotGothic16", "Hiragino Maru Gothic ProN", system-ui, sans-serif;
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: max(12px, env(safe-area-inset-top)) 16px 24px;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ---------------- the egg-shaped device ---------------- */
+.device { position: relative; width: min(92vw, 390px); user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+.shell {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 0.86;
+  border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
+  background:
+    radial-gradient(circle at 30% 18%, var(--shell-hi) 0 10%, transparent 30%),
+    radial-gradient(#ffffff66 14%, transparent 15%) 0 0 / 22px 22px,
+    linear-gradient(160deg, #ffc8e1, var(--shell) 45%, var(--shell-lo));
+  box-shadow:
+    inset 0 -16px 0 #e86aa3aa,
+    inset 0 12px 0 #ffffff88,
+    0 10px 0 #d65a93,
+    0 18px 30px #c0508844;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 13%;
+}
+.deco { position: absolute; width: 18px; height: 18px; }
+.deco::before { content: "★"; color: #fff7b0; font-size: 18px; text-shadow: 0 2px 0 #e2b93a; }
+.deco-a { left: 12%; top: 16%; }
+.deco-b { right: 13%; top: 12%; transform: scale(0.8); }
+.deco-c { right: 8%; top: 42%; transform: scale(0.7); }
+.frame {
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 22%;
+  background: linear-gradient(160deg, #d6c0ff, var(--frame) 50%, var(--frame-lo));
+  box-shadow: inset 0 4px 0 #ffffff66, inset 0 -5px 0 #6c48b088, 0 4px 0 #c05088;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7%;
+}
+.bezel {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #1c1430;
+  border-radius: 10px;
+  position: relative;
+  box-shadow: inset 0 3px 6px #000a;
+}
+#screen {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 94%;
+  height: 94%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #fff;
+  border-radius: 3px;
+  touch-action: none;
+}
+.buttons { display: flex; gap: 9%; margin-top: 6%; width: 64%; justify-content: center; }
+.btn {
+  width: 19%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 0;
+  background: radial-gradient(circle at 35% 30%, #fffbd8 0 18%, var(--btn) 40%, var(--btn-lo));
+  box-shadow: 0 5px 0 #b88a20, inset 0 -3px 0 #d7a62c;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  transition: transform 0.05s;
+}
+.btn:nth-child(2) { transform: translateY(12%); }
+.btn span {
+  position: absolute; left: 50%; bottom: -46%; transform: translateX(-50%);
+  font: 12px "DotGothic16", monospace; color: #8e2f5c;
+}
+.btn.down { box-shadow: 0 1px 0 #b88a20, inset 0 -1px 0 #d7a62c; transform: translateY(4px); }
+.btn:nth-child(2).down { transform: translateY(calc(12% + 4px)); }
+.chain {
+  position: absolute; left: 50%; top: -14px; width: 26px; height: 26px; transform: translateX(-50%);
+  border-radius: 50%; border: 5px solid #d4c6ea; z-index: -1;
+}
+
+.help { font-size: 12px; margin: 30px 0 8px; text-align: center; opacity: 0.8; }
+.note { font-size: 11px; opacity: 0.6; text-align: center; margin-top: 18px; }
+.tools { display: flex; gap: 8px; }
+.pill {
+  font: 13px "DotGothic16", monospace; color: var(--ink);
+  background: var(--panel); border: 2px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer;
+}
+.pill.on { background: #ffe38a; border-color: #e2b93a; color: #4a2f60; }
+
+/* ---------------- debug panel ---------------- */
+#debug {
+  width: min(100%, 560px);
+  margin-top: 12px;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 13px;
+}
+#debug h3 { margin: 14px 0 6px; font-size: 14px; color: #ff6fa3; border-bottom: 2px dashed var(--line); padding-bottom: 3px; }
+#debug h3:first-child { margin-top: 0; }
+#debug .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0; }
+#debug button, #debug select, #debug input {
+  font: 13px "DotGothic16", monospace; color: var(--ink);
+  background: var(--bg); border: 2px solid var(--line); border-radius: 8px; padding: 4px 8px;
+}
+#debug button { cursor: pointer; }
+#debug button:active { transform: translateY(1px); }
+#debug label { display: inline-flex; gap: 4px; align-items: center; }
+#debug .genes { display: grid; grid-template-columns: auto 1fr; gap: 4px 8px; align-items: center; }
+#debug .genes select { width: 100%; }
+#debug .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+#debug canvas { image-rendering: pixelated; background: #f4ecff; border-radius: 8px; }
+#debug .kids { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+#debug .kid { display: flex; flex-direction: column; align-items: center; font-size: 10px; background: var(--bg); border-radius: 8px; padding: 3px; }
+#debug .src-a { color: #2f6fc0; }
+#debug .src-b { color: #e0508a; }
+#debug .src-m { color: #8a50d8; font-weight: bold; }
+#debug .log { font-size: 11px; opacity: 0.8; }
+@media (max-width: 420px) { #debug .pair { grid-template-columns: 1fr; } }
+
+</style>
+<main id="app">
+  <div class="device">
+    <div class="shell">
+      <div class="deco deco-a"></div><div class="deco deco-b"></div><div class="deco deco-c"></div>
+      <div class="frame">
+        <div class="bezel">
+          <canvas id="screen" width="256" height="256" aria-label="たまごっちの画面"></canvas>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="btn" data-btn="A" aria-label="Aボタン（えらぶ）"><span>A</span></button>
+        <button class="btn" data-btn="B" aria-label="Bボタン（けってい）"><span>B</span></button>
+        <button class="btn" data-btn="C" aria-label="Cボタン（もどる）"><span>C</span></button>
+      </div>
+    </div>
+    <div class="chain"></div>
+  </div>
+  <p class="help">A: えらぶ ・ B: けってい ・ C: もどる ／ がめんを タッチしても あそべるよ</p>
+  <div class="tools">
+    <button id="muteBtn" class="pill">おと: ON</button>
+    <button id="debugBtn" class="pill">デバッグ</button>
+  </div>
+  <section id="debug" hidden></section>
+  <p class="note">ファンメイドの再現作品です（非公式）。ドット絵はすべて手打ち。</p>
+</main>
+
+<!-- core -->
+<script>
+/*
+ * TM — global namespace & registries.
+ *
+ * Every piece of content (parts, foods, furniture, rooms, places, characters …)
+ * is registered through TM.register(kind, def). To add new content, create a
+ * new file in js/data/, call TM.register(...) and add a <script> tag to
+ * index.html (after js/core/*). Nothing else needs to change.
+ */
+(function () {
+  'use strict';
+
+  const TM = (window.TM = {
+    W: 128,          // logical screen width  (world pixels)
+    H: 128,          // logical screen height
+    DEV: !!window.TM_DEV,
+    SCALE: 2,        // canvas pixels per world pixel (text is drawn at this res)
+    reg: {},         // kind -> { id -> def }
+    order: {},       // kind -> [id, ...] in registration order
+    scenes: {},
+    util: {},
+  });
+
+  TM.register = function (kind, def) {
+    if (!def || !def.id) throw new Error('TM.register: def.id required (' + kind + ')');
+    if (!TM.reg[kind]) { TM.reg[kind] = {}; TM.order[kind] = []; }
+    if (!TM.reg[kind][def.id]) TM.order[kind].push(def.id);
+    TM.reg[kind][def.id] = def;
+    return def;
+  };
+  TM.get = (kind, id) => (TM.reg[kind] || {})[id];
+  TM.list = (kind) => (TM.order[kind] || []).map((id) => TM.reg[kind][id]);
+  TM.ids = (kind) => (TM.order[kind] || []).slice();
+
+  // ---------- small utils ----------
+  const U = TM.util;
+  U.rand = (n) => Math.floor(Math.random() * n);
+  U.pick = (arr) => arr[U.rand(arr.length)];
+  U.clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+  U.chance = (p) => Math.random() < p;
+  U.lerp = (a, b, t) => a + (b - a) * t;
+  U.uid = () => Math.random().toString(36).slice(2, 10);
+
+  // Japanese-ish pet names: <syllables>っち
+  const SYL = ['ま', 'み', 'め', 'く', 'ぴ', 'ぽ', 'る', 'ら', 'ゆ', 'ね', 'に', 'ぷ', 'ち', 'も', 'さ', 'り', 'こ', 'の', 'ふ', 'わ', 'きら', 'ぱ', 'ぺ', 'しゅ', 'みゅ', 'にゃ', 'ぴよ'];
+  U.makeName = function () {
+    let s = U.pick(SYL);
+    if (U.chance(0.7)) s += U.pick(SYL);
+    return s + (U.chance(0.85) ? 'っち' : 'りん');
+  };
+})();
+
+</script>
+<script>
+/*
+ * Pixel art core.
+ *
+ * Sprites are hand-typed string grids. One character = one pixel.
+ *   '.' or ' '  transparent
+ *   o a b c d e  -> "gene colour" slots (recoloured per character colour gene)
+ *                    o outline, a main, b shade, c light, d accent, e accent shade
+ *   anything else -> fixed colours (TM.FIXED) or a sprite-local palette.
+ *
+ * TM.spr(rows, {mirror, pal}) :
+ *   mirror: true   -> rows are the LEFT half; the right half is the mirror image
+ *   mirror: 'odd'  -> like true but the last column is the centre (not doubled)
+ *   pal: { key: '#rrggbb' }  local colours for this sprite only
+ */
+(function () {
+  'use strict';
+
+  // Fixed palette shared by all art.
+  TM.FIXED = {
+    k: '#2b1d3a', // ink (eyes, lines)
+    K: '#000000',
+    w: '#ffffff',
+    l: '#e6e6f2', // light gray
+    m: '#b4b4c8', // gray
+    M: '#6e6e88', // dark gray
+    p: '#ff9ec2', // cheek pink
+    P: '#ff6fa3', // hot pink
+    r: '#ff4d5e', // red
+    R: '#b8283a', // dark red
+    t: '#ff9a3c', // orange
+    T: '#c8641e', // dark orange
+    y: '#ffd84a', // yellow
+    Y: '#d9a41e', // dark yellow
+    q: '#fff3b0', // cream
+    g: '#7ed56f', // green
+    G: '#3f9a4a', // dark green
+    h: '#c9f29b', // light green
+    u: '#5ab4ff', // blue
+    U: '#2f6fc0', // dark blue
+    j: '#bfe6ff', // light blue
+    v: '#b48cf0', // purple
+    V: '#6c48b0', // dark purple
+    n: '#c88a52', // brown
+    N: '#7a4a28', // dark brown
+    s: '#ffe0c4', // skin / beige
+    S: '#f2b890', // skin shade
+    x: '#ffd0e0', // pale pink
+    z: '#1c2448', // night navy
+    Z: '#10152e', // deep night
+    '1': '#8fd3ff', // sky
+    '2': '#c7ecff', // sky light
+    '3': '#ffe38a', // sun
+    '4': '#9ce7c0', // mint
+    '5': '#f6c6ff', // lilac
+    '6': '#ffb3b3', // salmon
+    '7': '#dcb482', // wood light
+    '8': '#b07a4a', // wood
+    '9': '#8a5a32', // wood dark
+    '0': '#fdf6e8', // off white
+  };
+
+  let SPR_UID = 0;
+  TM.spr = function (rows, opts) {
+    opts = opts || {};
+    let r = rows.slice();
+    if (opts.mirror) {
+      r = r.map((row) => {
+        const rev = row.split('').reverse();
+        if (opts.mirror === 'odd') rev.shift();
+        return row + rev.join('');
+      });
+    }
+    const w = Math.max(...r.map((s) => s.length));
+    const h = r.length;
+    // pad rows (and warn: hand-typed art sometimes has a missing pixel)
+    r = r.map((s, i) => {
+      if (s.length !== w && TM.DEV) console.warn('sprite row length mismatch', opts.name || '', i, s);
+      return s.padEnd(w, '.');
+    });
+    return { uid: ++SPR_UID, w, h, rows: r, pal: opts.pal || null, name: opts.name || '' };
+  };
+
+  // Resolve colour of key given a gene palette.
+  function col(key, spr, gp) {
+    if (spr.pal && spr.pal[key]) return spr.pal[key];
+    if (gp && gp[key]) return gp[key];
+    return TM.FIXED[key] || null;
+  }
+
+  // ---- sprite -> canvas cache ----
+  const cache = new Map();
+  TM.sprCanvas = function (spr, gp, flip) {
+    const key = spr.uid + '|' + (gp ? gp.id : '-') + '|' + (flip ? 1 : 0);
+    let c = cache.get(key);
+    if (c) return c;
+    c = document.createElement('canvas');
+    c.width = spr.w;
+    c.height = spr.h;
+    const ctx = c.getContext('2d');
+    const img = ctx.createImageData(spr.w, spr.h);
+    for (let y = 0; y < spr.h; y++) {
+      const row = spr.rows[y];
+      for (let x = 0; x < spr.w; x++) {
+        const ch = row[x];
+        if (ch === '.' || ch === ' ') continue;
+        const hex = col(ch, spr, gp);
+        if (!hex) continue;
+        const dx = flip ? spr.w - 1 - x : x;
+        const i = (y * spr.w + dx) * 4;
+        img.data[i] = parseInt(hex.substr(1, 2), 16);
+        img.data[i + 1] = parseInt(hex.substr(3, 2), 16);
+        img.data[i + 2] = parseInt(hex.substr(5, 2), 16);
+        img.data[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    cache.set(key, c);
+    return c;
+  };
+  TM.clearSprCache = () => cache.clear();
+
+  // Masked copy: returns a new sprite with pixels removed where mask has '#'.
+  // Used for bite marks on food (masks are hand-typed too).
+  TM.sprMask = function (spr, mask, fromRight) {
+    const rows = spr.rows.map((row, y) => {
+      let out = '';
+      for (let x = 0; x < spr.w; x++) {
+        const mx = fromRight ? mask.w - (spr.w - x) : x;
+        const my = y;
+        const m = mx >= 0 && mx < mask.w && my < mask.h ? mask.rows[my][mx] : '.';
+        out += m === '#' ? '.' : row[x];
+      }
+      return out;
+    });
+    const s = TM.spr(rows, { pal: spr.pal });
+    return s;
+  };
+
+  // Offscreen composition helper: draw several layers into one canvas.
+  TM.compose = function (w, h, layers) {
+    const c = document.createElement('canvas');
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext('2d');
+    for (const L of layers) {
+      if (!L || !L.spr) continue;
+      ctx.drawImage(TM.sprCanvas(L.spr, L.gp, L.flip), L.x | 0, L.y | 0);
+    }
+    return c;
+  };
+})();
+
+</script>
+<script>
+/*
+ * Renderer. The world is 128x128 "pixels"; the canvas is 256x256 so that
+ * Japanese text (DotGothic16, a pixel font) can be drawn crisply at 16px.
+ * All sprite drawing uses integer world coordinates -> pixel perfect.
+ */
+(function () {
+  'use strict';
+  const G = (TM.gfx = {});
+  let cv, ctx;
+  const S = TM.SCALE;
+  G.FONT = '"DotGothic16", "Hiragino Maru Gothic ProN", monospace';
+
+  G.init = function (canvas) {
+    cv = canvas;
+    cv.width = TM.W * S;
+    cv.height = TM.H * S;
+    ctx = cv.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    G.ctx = ctx;
+  };
+
+  G.begin = function () {
+    ctx.setTransform(S, 0, 0, S, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    ctx.globalAlpha = 1;
+  };
+
+  G.rect = function (x, y, w, h, c) {
+    ctx.fillStyle = c;
+    ctx.fillRect(x | 0, y | 0, w | 0, h | 0);
+  };
+  G.px = (x, y, c) => G.rect(x, y, 1, 1, c);
+  G.clear = (c) => G.rect(0, 0, TM.W, TM.H, c);
+  G.alpha = (a) => (ctx.globalAlpha = a);
+
+  G.spr = function (spr, x, y, o) {
+    if (!spr) return;
+    o = o || {};
+    if (o.alpha != null) ctx.globalAlpha = o.alpha;
+    ctx.drawImage(TM.sprCanvas(spr, o.gp, o.flip), Math.round(x), Math.round(y));
+    if (o.alpha != null) ctx.globalAlpha = 1;
+  };
+  // integer-scaled sprite (still pixel perfect: each pixel becomes s x s)
+  G.sprS = function (spr, x, y, s, o) {
+    if (!spr) return;
+    o = o || {};
+    const c = TM.sprCanvas(spr, o.gp, o.flip);
+    ctx.drawImage(c, 0, 0, spr.w, spr.h, Math.round(x), Math.round(y), spr.w * s, spr.h * s);
+  };
+  // draw sprite anchored at bottom-centre
+  G.sprBC = function (spr, cx, by, o) {
+    if (!spr) return;
+    G.spr(spr, Math.round(cx - spr.w / 2), Math.round(by - spr.h), o);
+  };
+  G.img = function (canvas, x, y, flip, alpha) {
+    if (alpha != null) ctx.globalAlpha = alpha;
+    x = Math.round(x); y = Math.round(y);
+    if (flip) {
+      ctx.save();
+      ctx.translate(x + canvas.width, y);
+      ctx.scale(-1, 1);
+      ctx.drawImage(canvas, 0, 0);
+      ctx.restore();
+    } else ctx.drawImage(canvas, x, y);
+    if (alpha != null) ctx.globalAlpha = 1;
+  };
+
+  // tile a sprite over an area
+  G.tile = function (spr, x, y, w, h, gp) {
+    const c = TM.sprCanvas(spr, gp);
+    for (let ty = y; ty < y + h; ty += spr.h)
+      for (let tx = x; tx < x + w; tx += spr.w) {
+        const cw = Math.min(spr.w, x + w - tx), ch = Math.min(spr.h, y + h - ty);
+        ctx.drawImage(c, 0, 0, cw, ch, tx, ty, cw, ch);
+      }
+  };
+
+  // ---------- Text (thresholded => no anti-alias) ----------
+  const tcache = new Map();
+  // The pixel font only thresholds cleanly when its dots sit exactly on the
+  // pixel grid. Find the sub-pixel offset that gives the least grey pixels.
+  let OFF = { x: 0, y: 0 };
+  G.calibrateFont = function () {
+    const t = document.createElement('canvas');
+    t.width = 200; t.height = 24;
+    const c = t.getContext('2d');
+    let best = 1e18;
+    for (let oy = 0; oy < 1; oy += 0.125)
+      for (let ox = 0; ox < 1; ox += 0.25) {
+        c.clearRect(0, 0, 200, 24);
+        c.font = '16px ' + G.FONT;
+        c.textBaseline = 'top';
+        c.fillStyle = '#000';
+        c.fillText('ドレスあたまごはんパ', 2 + ox, 2 + oy);
+        const d = c.getImageData(0, 0, 200, 24).data;
+        let grey = 0;
+        for (let i = 3; i < d.length; i += 4) grey += d[i] * (255 - d[i]);
+        if (grey < best) { best = grey; OFF = { x: ox, y: oy }; }
+      }
+    tcache.clear();
+  };
+  function textCanvas(str, color, outline) {
+    const key = str + '|' + color + '|' + (outline || '');
+    let c = tcache.get(key);
+    if (c) return c;
+    const t = document.createElement('canvas');
+    const tctx = t.getContext('2d');
+    tctx.font = '16px ' + G.FONT;
+    const w = Math.ceil(tctx.measureText(str).width) + 4;
+    t.width = w;
+    t.height = 20;
+    tctx.font = '16px ' + G.FONT;
+    tctx.textBaseline = 'top';
+    tctx.fillStyle = '#000';
+    tctx.fillText(str, 2 + OFF.x, 2 + OFF.y);
+    const src = tctx.getImageData(0, 0, w, 20);
+    const on = new Uint8Array(w * 20);
+    for (let i = 0; i < on.length; i++) on[i] = src.data[i * 4 + 3] > 120 ? 1 : 0;
+    const out = tctx.createImageData(w, 20);
+    const put = (i, hex) => {
+      out.data[i * 4] = parseInt(hex.substr(1, 2), 16);
+      out.data[i * 4 + 1] = parseInt(hex.substr(3, 2), 16);
+      out.data[i * 4 + 2] = parseInt(hex.substr(5, 2), 16);
+      out.data[i * 4 + 3] = 255;
+    };
+    if (outline) {
+      for (let y = 0; y < 20; y++)
+        for (let x = 0; x < w; x++) {
+          if (on[y * w + x]) continue;
+          let n = false;
+          for (let dy = -1; dy <= 1 && !n; dy++)
+            for (let dx = -1; dx <= 1; dx++) {
+              const xx = x + dx, yy = y + dy;
+              if (xx >= 0 && yy >= 0 && xx < w && yy < 20 && on[yy * w + xx]) { n = true; break; }
+            }
+          if (n) put(y * w + x, outline);
+        }
+    }
+    for (let i = 0; i < on.length; i++) if (on[i]) put(i, color);
+    tctx.putImageData(out, 0, 0);
+    c = t;
+    c._w = w - 4;
+    tcache.set(key, c);
+    return c;
+  }
+  G.clearTextCache = () => tcache.clear();
+
+  // width of text in WORLD pixels
+  G.textW = function (str) {
+    return Math.ceil(textCanvas(str, '#000')._w / S);
+  };
+  // x,y are world coords of the text's top-left (8px high line)
+  G.text = function (str, x, y, o) {
+    if (str == null || str === '') return;
+    str = String(str);
+    o = o || {};
+    const c = textCanvas(str, o.color || TM.FIXED.k, o.outline);
+    let px = x * S;
+    if (o.align === 'center') px -= c._w / 2;
+    else if (o.align === 'right') px -= c._w;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.drawImage(c, Math.round(px) - 2, Math.round(y * S) - 2);
+    ctx.restore();
+  };
+
+  // ---------- tiny 3x5 digit font (hand typed) ----------
+  const DIG = {
+    '0': ['###', '#.#', '#.#', '#.#', '###'],
+    '1': ['.#.', '##.', '.#.', '.#.', '###'],
+    '2': ['###', '..#', '###', '#..', '###'],
+    '3': ['###', '..#', '.##', '..#', '###'],
+    '4': ['#.#', '#.#', '###', '..#', '..#'],
+    '5': ['###', '#..', '###', '..#', '###'],
+    '6': ['###', '#..', '###', '#.#', '###'],
+    '7': ['###', '..#', '.#.', '.#.', '.#.'],
+    '8': ['###', '#.#', '###', '#.#', '###'],
+    '9': ['###', '#.#', '###', '..#', '###'],
+    ':': ['...', '.#.', '...', '.#.', '...'],
+    '/': ['..#', '..#', '.#.', '#..', '#..'],
+    '%': ['#.#', '..#', '.#.', '#..', '#.#'],
+    '.': ['...', '...', '...', '...', '.#.'],
+    '-': ['...', '...', '###', '...', '...'],
+    '+': ['...', '.#.', '###', '.#.', '...'],
+    'x': ['...', '#.#', '.#.', '#.#', '...'],
+    'g': ['...', '###', '#.#', '###', '..#'],
+    'P': ['##.', '#.#', '##.', '#..', '#..'],
+    'L': ['#..', '#..', '#..', '#..', '###'],
+    'v': ['...', '...', '#.#', '#.#', '.#.'],
+    ' ': ['...', '...', '...', '...', '...'],
+  };
+  G.num = function (str, x, y, c) {
+    str = String(str);
+    ctx.fillStyle = c || TM.FIXED.k;
+    for (let i = 0; i < str.length; i++) {
+      const g = DIG[str[i]];
+      if (g) for (let yy = 0; yy < 5; yy++) for (let xx = 0; xx < 3; xx++) if (g[yy][xx] === '#') ctx.fillRect(x + i * 4 + xx, y + yy, 1, 1);
+    }
+  };
+  G.numW = (str) => String(str).length * 4 - 1;
+
+  // ---------- window / dialog box with pixel rounded corners ----------
+  G.box = function (x, y, w, h, o) {
+    o = o || {};
+    const bd = o.border || '#6b4a8a', bg = o.bg || '#fffaf0', sh = o.shadow || '#e8d8f0';
+    G.rect(x + 2, y, w - 4, 1, bd);
+    G.rect(x + 2, y + h - 1, w - 4, 1, bd);
+    G.rect(x, y + 2, 1, h - 4, bd);
+    G.rect(x + w - 1, y + 2, 1, h - 4, bd);
+    G.px(x + 1, y + 1, bd); G.px(x + w - 2, y + 1, bd);
+    G.px(x + 1, y + h - 2, bd); G.px(x + w - 2, y + h - 2, bd);
+    G.rect(x + 2, y + 1, w - 4, h - 2, bg);
+    G.rect(x + 1, y + 2, w - 2, h - 4, bg);
+    G.rect(x + 2, y + h - 2, w - 4, 1, sh);
+  };
+
+  // speech-bubble style message at bottom
+  G.msg = function (lines, o) {
+    o = o || {};
+    if (!Array.isArray(lines)) lines = [lines];
+    const h = 6 + lines.length * 10;
+    const y = o.y != null ? o.y : TM.H - h - 2;
+    G.box(2, y, TM.W - 4, h, o);
+    lines.forEach((l, i) => G.text(l, 8, y + 4 + i * 10, { color: o.color || '#4a2f60' }));
+  };
+})();
+
+</script>
+<!-- content (add new files here) -->
+<script>
+/*
+ * COLOUR GENE — one of the 5 inherited traits.
+ * Slots: a main, b shade, c highlight, o outline, d accent, e accent shade.
+ * Add a colour: TM.register('color', { id, name, a, b, c, o, d, e })
+ */
+(function () {
+  const C = (id, name, a, b, c, o, d, e) => TM.register('color', { id, name, a, b, c, o, d, e });
+  C('pink',     'ももいろ',   '#ffb0cf', '#f27aa8', '#ffe3ef', '#8e2f5c', '#8fd8ff', '#3f8fd0');
+  C('sky',      'そらいろ',   '#a4dcff', '#63afe8', '#e2f5ff', '#2c5a8e', '#ffd35c', '#d69a1e');
+  C('lemon',    'レモン',     '#fff27e', '#f0c83c', '#fffcd4', '#8a661a', '#ff94bc', '#d8588a');
+  C('mint',     'ミント',     '#aef2cc', '#62c898', '#e2fff0', '#2a6e50', '#ffa8c8', '#e06a98');
+  C('lavender', 'ラベンダー', '#dcbcff', '#aa86e8', '#f3eaff', '#5a3e8c', '#ffe07a', '#d8a830');
+  C('orange',   'みかん',     '#ffba6c', '#f08a38', '#ffe4c2', '#8a4a1a', '#86d86a', '#3f9a4a');
+  C('cream',    'ミルク',     '#fff4dc', '#f0d6a4', '#ffffff', '#8a6a4a', '#ff9ab8', '#d86a8a');
+  C('choco',    'ショコラ',   '#bc845a', '#8a5638', '#e4bc92', '#4a2a1a', '#ffb8d0', '#e07aa0');
+  C('berry',    'いちご',     '#ff7080', '#d8404e', '#ffc4cc', '#7a1a28', '#fff4dc', '#e8c8a0');
+  C('snow',     'ゆき',       '#ffffff', '#d4ddf0', '#ffffff', '#5a6a8e', '#a4dcff', '#63afe8');
+  C('gray',     'はいいろ',   '#bcbccc', '#8a8aa2', '#eaeaf2', '#3e3e54', '#ff8fb8', '#d8588a');
+  C('navy',     'よぞら',     '#6280ec', '#3a52b8', '#aec4ff', '#1a2a6a', '#fff07a', '#e0b830');
+  C('grape',    'ぶどう',     '#b27ae0', '#8450b8', '#dcc0f6', '#3e1e66', '#9ef0c8', '#4ab888');
+  C('leaf',     'わかば',     '#b6e67a', '#82bc48', '#e6fcc4', '#3e6a1e', '#ffb0cf', '#f27aa8');
+})();
+
+</script>
+<script>
+/*
+ * HEAD parts (inherited). Hand-typed, left half only (mirror:true).
+ * Fields:
+ *   rows    left half of the sprite
+ *   eyeY    row where the eyes' top row goes
+ *   mouthY  row of the mouth
+ *   gap     pixels between the two eyes (even number)
+ *   noMirror: set true and type full width rows for asymmetric heads
+ * Slots: o outline, a main, b shade, c light, d/e accent (hair, ribbons …)
+ */
+(function () {
+  const H = (id, name, rows, o) =>
+    TM.register('head', Object.assign({ id, name, spr: TM.spr(rows, { mirror: !o.noMirror, name: 'head:' + id }), gap: 6 }, o));
+
+  // bottom half shared by the round faces (12 rows)
+  const FACE_BOTTOM = [
+    'oaaaaaaaaaa',
+    'oaaaaaaaaaa',
+    'oaaaaaaaaaa',
+    'oaaaaaaaaaa',
+    'oaaaaaaaaaa',
+    'oaaaaaaaaaa',
+    'obaaaaaaaaa',
+    'obaaaaaaaaa',
+    '.obaaaaaaaa',
+    '.obbaaaaaaa',
+    '..oobbaaaaa',
+    '....ooooooo',
+  ];
+
+  H('maru', 'まる', [
+    '......ooooo',
+    '....ooccaaa',
+    '...occaaaaa',
+    '..ocaaaaaaa',
+    '.ocaaaaaaaa',
+    '.oaaaaaaaaa',
+  ].concat(FACE_BOTTOM), { eyeY: 7, mouthY: 13 });
+
+  H('neko', 'ねこみみ', [
+    '..o........',
+    '..oo.......',
+    '..opo......',
+    '..oppo.oooo',
+    '..opppoccaa',
+    '..oppaaaaaa',
+    '.oaaaaaaaaa',
+    '.oaaaaaaaaa',
+  ].concat(FACE_BOTTOM), { eyeY: 9, mouthY: 15 });
+
+  H('usagi', 'うさみみ', [
+    '...oo......',
+    '..oaao.....',
+    '..oapo.....',
+    '..oapo.....',
+    '..oapo.....',
+    '..oapo.....',
+    '..oapoooooo',
+    '..oapaccaaa',
+    '.ocaaaaaaaa',
+    '.oaaaaaaaaa',
+  ].concat(FACE_BOTTOM), { eyeY: 11, mouthY: 17 });
+
+  H('kuma', 'くまみみ', [
+    '.ooo.......',
+    'oaaao.ooooo',
+    'oappoocaaaa',
+    'oappaacaaaa',
+    '.oaaaaaaaaa',
+    '.oaaaaaaaaa',
+  ].concat(FACE_BOTTOM), { eyeY: 7, mouthY: 13 });
+
+  H('tsuno', 'つの', [
+    '...o.......',
+    '...oo......',
+    '...odo.....',
+    '...oddooooo',
+    '..ooddccaaa',
+    '..ocaaaaaaa',
+    '.ocaaaaaaaa',
+    '.oaaaaaaaaa',
+  ].concat(FACE_BOTTOM), { eyeY: 9, mouthY: 15 });
+
+  H('kurukuru', 'くるくるヘア', [
+    '..oo..oo..oo',
+    '.oddooddoodd',
+    '.odddddddddd',
+    'oddcdddddcdd',
+    'odddeddddedd',
+    'oddedddedddd',
+    'odddaaaaaaaa',
+    'oddaaaaaaaaa',
+    'oddaaaaaaaaa',
+    'odaaaaaaaaaa',
+    'odaaaaaaaaaa',
+    'odaaaaaaaaaa',
+    'oddaaaaaaaaa',
+    'oddaaaaaaaaa',
+    '.odbaaaaaaaa',
+    '.oddbbaaaaaa',
+    '..ooobbbaaaa',
+    '....oooooooo',
+  ], { eyeY: 7, mouthY: 13, gap: 6 });
+
+  H('odango', 'おだんご', [
+    '.ooo.......',
+    'oddeo......',
+    'odddo.ooooo',
+    'oedoooddcdd',
+    '.oooddddddd',
+    '..ooddddddd',
+    '.oddddddddd',
+    '.oddaddddda',
+    'odaaaaaaaaa',
+    'odaaaaaaaaa',
+  ].concat(FACE_BOTTOM.slice(2)), { eyeY: 9, mouthY: 15 });
+
+  H('happa', 'はっぱ', [
+    '....GGG....',
+    '...Ggggg...',
+    '....GGgggG.',
+    '.......GGGG',
+    '.........GG',
+    '......ooooG',
+    '....ooccaaa',
+    '...occaaaaa',
+    '..ocaaaaaaa',
+    '.ocaaaaaaaa',
+    '.oaaaaaaaaa',
+  ].concat(FACE_BOTTOM), { eyeY: 12, mouthY: 18 });
+
+  H('boushi', 'はたぼうし', [
+    '.........ww',
+    '.........wu',
+    '.........ww',
+    '..........k',
+    '......ooook',
+    '....oodddcd',
+    '...oddddddd',
+    '..odddddddd',
+    '.oddddddddd',
+    'oeddeddedde',
+    'oeaeeaeeaee',
+    'oaaaaaaaaaa',
+  ].concat(FACE_BOTTOM.slice(1)), { eyeY: 12, mouthY: 18 });
+
+  H('ribbon', 'リボン', [
+    '..oo.......',
+    '.odeo......',
+    '.oddeo..ooo',
+    '.odddeooedd',
+    '.oddddeoddd',
+    '.oddeeooooo',
+    '..oooocaaaa',
+    '...ocaaaaaa',
+    '..ocaaaaaaa',
+    '.oaaaaaaaaa',
+  ].concat(FACE_BOTTOM.slice(1)), { eyeY: 10, mouthY: 16 });
+
+  H('sushi', 'おすし', [
+    '....ooooooo',
+    '..oowwwwwww',
+    '.owwwwwwwgg',
+    '.owwwwwwggg',
+    '.owwwwwwwgg',
+    '.okwwwwwwww',
+    '.okkkwwwwww',
+    '.okkkkkkkkk',
+    '.okkkkkkkkk',
+    'ooooooooooo',
+    '.oaaaaaaaaa',
+  ].concat(FACE_BOTTOM.slice(1)), { eyeY: 11, mouthY: 17 });
+
+  H('hiyoko', 'とさか', [
+    '.........oo',
+    '........oro',
+    '.......oroo',
+    '........orr',
+    '......oooor',
+    '....ooccaaa',
+    '...occaaaaa',
+    '..ocaaaaaaa',
+    '.ocaaaaaaaa',
+    '.oaaaaaaaaa',
+  ].concat(FACE_BOTTOM), { eyeY: 11, mouthY: 17, beak: true });
+
+  H('tenshi', 'てんしのわ', [
+    '.....yyyyyy',
+    '...yyY....Y',
+    '....YYyyyyy',
+    '...........',
+    '......ooooo',
+    '....ooccaaa',
+    '...occaaaaa',
+    '..ocaaaaaaa',
+    '.ocaaaaaaaa',
+    '.oaaaaaaaaa',
+  ].concat(FACE_BOTTOM), { eyeY: 11, mouthY: 17 });
+})();
+
+</script>
+<script>
+/*
+ * EYES parts (inherited). Type the LEFT eye; the right eye is its mirror.
+ *   open    : normal eye (required)
+ *   closed  : blink / sleep  (optional, a default by width is used)
+ *   happy   : ^ ^ smile eyes (optional)
+ *   pal     : local colours (i = iris colour etc.)
+ *   gapAdd  : extra spacing between the eyes for this eye type
+ */
+(function () {
+  const E = (id, name, open, o) => {
+    o = o || {};
+    const pal = o.pal || null;
+    const d = { id, name, open: TM.spr(open, { pal, name: 'eye:' + id }) };
+    if (o.closed) d.closed = TM.spr(o.closed, { pal });
+    if (o.happy) d.happy = TM.spr(o.happy, { pal });
+    d.gapAdd = o.gapAdd || 0;
+    return TM.register('eyes', d);
+  };
+
+  E('tsubura', 'つぶら', [
+    'kk',
+    'kk',
+    'kk',
+  ], { gapAdd: 2 });
+
+  E('pacchiri', 'ぱっちり', [
+    '.kkk.',
+    'kwwkk',
+    'kwkkk',
+    'kkkik',
+    'kkiik',
+    '.kkk.',
+  ], { pal: { i: '#6a5ad8' } });
+
+  E('kirakira', 'キラキラ', [
+    'k.....',
+    '.kkkk.',
+    'kwwkkk',
+    'kwkkkk',
+    'kkkiik',
+    'kkiiik',
+    '.kkkk.',
+  ], { pal: { i: '#ff6fa3' }, gapAdd: -2 });
+
+  E('tare', 'たれめ', [
+    '...kk',
+    '.kkwk',
+    'kkwkk',
+    'kkkik',
+    '.kkk.',
+  ], { pal: { i: '#4aa0e0' }, happy: ['.kkk.', 'k...k'] });
+
+  E('tsuri', 'つりめ', [
+    'kk...',
+    '.kkk.',
+    '.kwkk',
+    '.kkkk',
+    '..kk.',
+  ], { happy: ['.kkk.', 'k...k'] });
+
+  E('hoshi', 'ほしのめ', [
+    '.kkk.',
+    'kkykk',
+    'kyyyk',
+    'kkykk',
+    '.kkk.',
+  ]);
+
+  E('nikoniko', 'にこにこ', [
+    '.kk.',
+    'k..k',
+  ], { closed: ['.kk.', 'k..k'], happy: ['.kk.', 'k..k'] });
+
+  E('manmaru', 'まんまる', [
+    '.kkk.',
+    'kwwwk',
+    'kwwkk',
+    'kwwkk',
+    '.kkk.',
+  ]);
+
+  E('nemu', 'ねむいめ', [
+    'kkkk',
+    'kwkk',
+    '.kk.',
+  ]);
+
+  E('heart', 'ハートのめ', [
+    '.r.r.',
+    'rrrrr',
+    'rwrrr',
+    '.rrr.',
+    '..r..',
+  ]);
+
+  E('glasses', 'めがね', [
+    '.MMMM.',
+    'M....M',
+    'M.kk.M',
+    'M.kk.M',
+    'M....M',
+    '.MMMMM',
+  ], { closed: ['.MMMM.', 'M....M', 'M....M', 'MkkkkM', 'M....M', '.MMMMM'], happy: ['.MMMM.', 'M....M', 'M.kk.M', 'Mk..kM', 'M....M', '.MMMMM'], gapAdd: -2 });
+
+  E('guruguru', 'ぐるぐる', [
+    'kkkkk',
+    'k...k',
+    'k.k.k',
+    'k.kkk',
+    'k....',
+    'kkkkk',
+  ]);
+
+  // ---------- defaults for expressions (by eye width) ----------
+  TM.EYE_CLOSED = {
+    2: TM.spr(['kk']),
+    3: TM.spr(['k.k', '.k.']),
+    4: TM.spr(['k..k', '.kk.']),
+    5: TM.spr(['k...k', '.kkk.']),
+    6: TM.spr(['k....k', '.kkkk.']),
+  };
+  TM.EYE_HAPPY = {
+    2: TM.spr(['kk', 'k.']),
+    3: TM.spr(['.k.', 'k.k']),
+    4: TM.spr(['.kk.', 'k..k']),
+    5: TM.spr(['.kkk.', 'k...k']),
+    6: TM.spr(['.kkkk.', 'k....k']),
+  };
+  // swirly "sick" eyes and angry eyes (shared)
+  TM.EYE_SICK = TM.spr(['.kkk.', 'k...k', 'k.k.k', 'k..kk', '.kk..']);
+  TM.EYE_CRY = TM.spr(['.....', 'kkkkk', '.....', '.u...', '.u...', 'uu...']);
+
+  // ---------- mouths (centred on the head) ----------
+  TM.MOUTH = {
+    smile: TM.spr(['k..k', '.kk.']),
+    open: TM.spr(['.kk.', 'krrk', '.kk.']),
+    big: TM.spr(['kkkkkk', 'krrrrk', '.krrk.']),
+    chew: TM.spr(['kkkk']),
+    line: TM.spr(['kkkk']),
+    frown: TM.spr(['.kk.', 'k..k']),
+    o: TM.spr(['.kk.', 'k..k', '.kk.']),
+    cat: TM.spr(['k.kk.k', '.k..k.']),
+  };
+  // beak variants (for heads with beak:true)
+  const bp = { B: '#ffae3a', D: '#c8641e' };
+  TM.BEAK = {
+    smile: TM.spr(['.DD.', 'DBBD', '.DD.'], { pal: bp }),
+    open: TM.spr(['DDDD', 'DkkD', 'DBBD', '.DD.'], { pal: bp }),
+    chew: TM.spr(['.DD.', 'DBBD', '.DD.'], { pal: bp }),
+  };
+  TM.CHEEK = TM.spr(['ppp']);
+})();
+
+</script>
+<script>
+/*
+ * BODY parts (inherited). Left half, mirrored. The top 2 rows are hidden
+ * behind the head (neck). Feet are on the last row.
+ *
+ * BACK parts (inherited): wings, tails … drawn BEHIND the body/head.
+ *   ox / oy : offset from (body centre x - w/2 , body top y)
+ */
+(function () {
+  const B = (id, name, rows, o) =>
+    TM.register('body', Object.assign({ id, name, spr: TM.spr(rows, { mirror: true, name: 'body:' + id }) }, o || {}));
+
+  B('futsuu', 'ふつう', [
+    '...oooo',
+    '..oaaaa',
+    '.oaoaaa',
+    'oaaoaaa',
+    'oaaoaaa',
+    '.oooaaa',
+    '...obaa',
+    '...obbb',
+    '...oaao',
+    '...oooo',
+  ]);
+
+  B('dress', 'ドレス', [
+    '...oooo',
+    '...oaaa',
+    '.oaoddd',
+    'oaaoddd',
+    '.oooddd',
+    '...oddd',
+    '..odddd',
+    '.oddddd',
+    '.oeeeee',
+    '.oooooo',
+    '...oao.',
+    '...ooo.',
+  ]);
+
+  B('necktie', 'ネクタイ', [
+    '...oooo',
+    '..oaawd',
+    '.oaoawd',
+    'oaaoaad',
+    'oaaoaae',
+    '.oooaad',
+    '...obbe',
+    '...obbb',
+    '...oaao',
+    '...oooo',
+  ]);
+
+  B('pocchari', 'ぽっちゃり', [
+    '....oooo',
+    '...oaaaa',
+    '..oaaacc',
+    '.ooaaccc',
+    'oaoaaccc',
+    'oaoaaccc',
+    '.ooaaacc',
+    '..obaaaa',
+    '...obbbb',
+    '....oaao',
+    '....oooo',
+  ]);
+
+  B('muffler', 'マフラー', [
+    '...oooo',
+    '...oaaa',
+    '.oddddd',
+    '.oeeeee',
+    'oaoaaaa',
+    'oaoaaaa',
+    '.ooaaaa',
+    '..obbbb',
+    '...oaao',
+    '...oooo',
+  ]);
+
+  B('ribbon', 'むねリボン', [
+    '...oooo',
+    '..oaaaa',
+    '.oaodaa',
+    'oaaodde',
+    'oaaodaa',
+    '.oooaaa',
+    '...obaa',
+    '...obbb',
+    '...oaao',
+    '...oooo',
+  ]);
+
+  B('robo', 'ロボ', [
+    '..ooooo',
+    '..oaaaa',
+    'MMoaaaa',
+    'mMoalll',
+    'mMoalry',
+    'MMoalll',
+    '..obbbb',
+    '..oMMoo',
+    '..oMMo.',
+    '..oooo.',
+  ]);
+
+  B('overall', 'オーバーオール', [
+    '...oooo',
+    '..oaaaa',
+    '.oaoaaa',
+    'oaaodaa',
+    'oaaodaa',
+    '.oooddd',
+    '...oddd',
+    '...oeee',
+    '...onno',
+    '...oooo',
+  ]);
+
+  B('kimono', 'きもの', [
+    '...oooo',
+    '...owaa',
+    '.odowdd',
+    'oddodwd',
+    'oddoddw',
+    '.oooyyy',
+    '...oYYY',
+    '...oddd',
+    '...oeee',
+    '...owwo',
+    '...oooo',
+  ]);
+
+  // ================= BACK =================
+  const K = (id, name, rows, o) => {
+    o = o || {};
+    return TM.register('back', Object.assign({ id, name, spr: rows ? TM.spr(rows, { mirror: !o.noMirror, name: 'back:' + id }) : null, ox: 0, oy: 0 }, o));
+  };
+
+  K('none', 'なし', null);
+
+  K('tenshi', 'てんしのはね', [
+    '..mmm...........',
+    '.mwwwmm.........',
+    'mwwwwwwm........',
+    'mwlwwwwwm.......',
+    'mwwlwwwwwmm.....',
+    '.mwwlwwwwwwm....',
+    '..mwwllwwwwm....',
+    '...mmwwlwwm.....',
+    '.....mmmmm......',
+  ], { oy: -7 });
+
+  K('akuma', 'こうもりのはね', [
+    'V...............',
+    'VV..............',
+    'VvV.............',
+    'VvvVV...........',
+    'VvvvvVV.........',
+    'VvVvvvvVV.......',
+    'V.VvVvvvvV......',
+    '...V.VVVVV......',
+  ], { oy: -6 });
+
+  K('chou', 'ちょうのはね', [
+    '.oo.............',
+    'oddoo...........',
+    'odcddoo.........',
+    'oddddddo........',
+    '.oddddddo.......',
+    '..oooooo........',
+    '..oeeeo.........',
+    '...ooo..........',
+  ], { oy: -7 });
+
+  K('mant', 'マント', [
+    '...ooooooo',
+    '..oddddddd',
+    '..oddddddd',
+    '..oddddddd',
+    '.odddddddd',
+    '.odddddddd',
+    '.odddddddd',
+    'oddddddddd',
+    'oeeeeeeeee',
+    'oooooooooo',
+  ], { oy: 0 });
+
+  K('buta', 'くるりんしっぽ', [
+    '.ooo.',
+    'oaaao',
+    'oaoao',
+    'ooaao',
+    '.ooo.',
+  ], { noMirror: true, ox: 8, oy: 4 });
+
+  K('neko', 'ねこのしっぽ', [
+    '......oo',
+    '.....oao',
+    '.....oao',
+    '....oao.',
+    '...oao..',
+    '..oao...',
+    '.oao....',
+    'oao.....',
+    'oo......',
+  ], { noMirror: true, ox: 9, oy: -1 });
+
+  K('kitsune', 'ふさふさしっぽ', [
+    '.....oo.',
+    '....occo',
+    '...oaaco',
+    '..oaaaao',
+    '.oaaaaao',
+    '.oaaaao.',
+    'oaaaao..',
+    'oaaoo...',
+    'ooo.....',
+  ], { noMirror: true, ox: 9, oy: -2 });
+
+  K('usagi', 'まんまるしっぽ', [
+    '.ll.',
+    'lwwl',
+    'lwwl',
+    '.ll.',
+  ], { noMirror: true, ox: 8, oy: 5 });
+
+  K('ryu', 'ドラゴンのはね', [
+    '......G.........',
+    '.....GgG........',
+    '....GgggG.......',
+    '...GgGgggG......',
+    '..GgGgGgggG.....',
+    '.GgG.GgGgggG....',
+    'GG...G.GgggG....',
+    '.......GGGG.....',
+  ], { oy: -7 });
+})();
+
+</script>
+<script>
+/*
+ * Life-stage sprites: egg → baby → child → (adult is built from parts).
+ * All are recoloured by the colour gene. Child sprites show a small hint of
+ * the inherited head ("childDeco") so you can guess what the adult will be.
+ */
+(function () {
+  TM.STAGE = {};
+
+  TM.STAGE.egg = TM.spr([
+    '......oo',
+    '....ooaa',
+    '...oaaaa',
+    '..oaacaa',
+    '..oacaaa',
+    '.oaaaaaa',
+    '.oaaaaaa',
+    'odaadaad',
+    'oddddddd',
+    'oaddaadd',
+    'oaaaaaaa',
+    'oaaaaaaa',
+    'obaaaaaa',
+    '.obaaaaa',
+    '.obbaaaa',
+    '..obbbbb',
+    '...ooooo',
+  ], { mirror: true, name: 'egg' });
+
+  // hatching cracks drawn over the egg (frame 1, 2)
+  TM.STAGE.crack = [
+    TM.spr([
+      '................',
+      '................',
+      '................',
+      '................',
+      '.......k........',
+      '......k.k.......',
+      '.....k...k......',
+    ]),
+    TM.spr([
+      '................',
+      '................',
+      '.......k........',
+      '......k.k.......',
+      '..k..k...k..k...',
+      '...kk.....kk.k..',
+      '.............k..',
+    ]),
+  ];
+  // egg shell halves after hatching
+  TM.STAGE.shell = TM.spr([
+    'o.o..o.o',
+    'oaoaaoao',
+    'oaaaaaaa',
+    'obaaaaaa',
+    '.obaaaaa',
+    '.obbaaaa',
+    '..obbbbb',
+    '...ooooo',
+  ], { mirror: true });
+
+  TM.STAGE.baby = [
+    {
+      spr: TM.spr([
+        '...oooo',
+        '.ooaaaa',
+        '.occaaa',
+        'ocaaaaa',
+        'oaaaaaa',
+        'oaaaaaa',
+        'oaaaaaa',
+        'oaaaaaa',
+        'obaaaaa',
+        '.obbaaa',
+        '..oobbb',
+        '....ooo',
+      ], { mirror: true, name: 'baby1' }),
+      eyeY: 4, mouthY: 8, gap: 4,
+    },
+    {
+      spr: TM.spr([
+        '.....o.',
+        '......o',
+        '...oooo',
+        '.ooaaaa',
+        '.occaaa',
+        'ocaaaaa',
+        'oaaaaaa',
+        'oaaaaaa',
+        'oaaaaaa',
+        'obaaaaa',
+        'obaaaaa',
+        '.obbaaa',
+        '..oobbb',
+        '....ooo',
+      ], { mirror: true, name: 'baby2' }),
+      eyeY: 6, mouthY: 10, gap: 4,
+    },
+  ];
+
+  TM.STAGE.child = {
+    spr: TM.spr([
+      '.....oooo',
+      '...ooccaa',
+      '..occaaaa',
+      '.ocaaaaaa',
+      '.oaaaaaaa',
+      'oaaaaaaaa',
+      'oaaaaaaaa',
+      'oaaaaaaaa',
+      'oaaaaaaaa',
+      'oaaaaaaaa',
+      'obaaaaaaa',
+      '.obaaaaaa',
+      '..oobbbbb',
+      '...oooaaa',
+      '..oaoaaaa',
+      '..oaoaaaa',
+      '...oobbbb',
+      '....oaao.',
+      '....oooo.',
+    ], { mirror: true, name: 'child' }),
+    eyeY: 4, mouthY: 10, gap: 2,
+  };
+
+  // small decorations that hint the adult head (keyed by head id)
+  const D = (rows, dy) => ({ spr: TM.spr(rows, { mirror: true }), dy });
+  TM.CHILD_DECO = {
+    neko: D(['..o......', '..oo.....', '..opo....', '..oppo...'], -3),
+    usagi: D(['...oo....', '..oapo...', '..oapo...', '..oapo...', '..oapo...'], -4),
+    kuma: D(['.ooo.....', 'oaaao....', 'oapo.....'], -2),
+    happa: D(['......GG.', '.......GG', '........G'], -3),
+    tsuno: D(['...o.....', '...oo....', '...odo...'], -2),
+    ribbon: D(['..oo.....', '.odeo..oo', '.oddeooed', '..ooo..oo'], -3),
+    tenshi: D(['.....yyyy', '....Y....', '.....YYYY'], -5),
+    hiyoko: D(['.......oo', '.......or'], -2),
+    kurukuru: D(['...oo.oo.', '..oddoddo', '..odddddd'], -2),
+    odango: D(['..ooo....', '.oddeo...', '.odddo...', '..ooo....'], -2),
+    boushi: D(['.......ww', '.......wu', '........k', '.....oodd'], -3),
+    sushi: D(['.....oooo', '....owwwg', '....okkkk'], -2),
+  };
+})();
+
+</script>
+<script>
+/*
+ * FOODS. kind: 'meal' (ごはん: おなか+) or 'snack' (おやつ: ごきげん+, たいじゅう+)
+ * Add one:  TM.register('food', { id, name, kind, spr, hunger, happy, weight })
+ * Sprites are 16 px wide (hand typed). Bites are cut with the masks below.
+ */
+(function () {
+  const F = (id, name, kind, rows, o) => {
+    o = o || {};
+    return TM.register('food', {
+      id, name, kind,
+      spr: TM.spr(rows, { mirror: o.mirror, pal: o.pal, name: 'food:' + id }),
+      hunger: o.hunger != null ? o.hunger : kind === 'meal' ? 1 : 0,
+      happy: o.happy != null ? o.happy : kind === 'snack' ? 1 : 0,
+      weight: o.weight != null ? o.weight : kind === 'snack' ? 2 : 1,
+      steam: !!o.steam,
+      drink: !!o.drink,
+    });
+  };
+
+  // ======== ごはん ========
+  F('onigiri', 'おにぎり', 'meal', [
+    '.......k',
+    '......kw',
+    '.....kww',
+    '....kwww',
+    '...kwwww',
+    '...kwlww',
+    '..kwwwww',
+    '..kwwwww',
+    '.kwwwzzz',
+    '.kwwwzzz',
+    'kwwwwzzz',
+    'klwwwzzz',
+    '.klllzzz',
+    '..kkkkkk',
+  ], { mirror: true, pal: { z: '#2a3a34' } });
+
+  F('omurice', 'オムライス', 'meal', [
+    '....kkkk',
+    '..kkyyyy',
+    '.kyqyyyy',
+    '.kyqyyry',
+    'kyyyyyrr',
+    'kyyyyyyr',
+    'kyyyyyyy',
+    'kYyyyyyy',
+    '.kYYYYyy',
+    '..kkkkkk',
+  ], { mirror: true, steam: true, hunger: 2 });
+
+  F('hamburg', 'ハンバーグ', 'meal', [
+    '...kkkkk',
+    '..kDDDDD',
+    '.kDDDqDD',
+    '.kDDDDDD',
+    'knDDDDDD',
+    'knnDDDDD',
+    'knnnnnnn',
+    'kNnnnnnn',
+    '.kNNNNNN',
+    '..kkkkkk',
+  ], { mirror: true, steam: true, hunger: 2, pal: { D: '#8a3a1e' } });
+
+  F('ramen', 'ラーメン', 'meal', [
+    'kkkkkkkkkkkkkkkk',
+    'kqqyyqqqqxxqqgqk',
+    'kqyyyyqqxPxqgqgk',
+    '.kqyyqqqqxxqqgk.',
+    '.krrrrrrrrrrrrk.',
+    '..krwrrwrrwrrk..',
+    '..krrrrrrrrrrk..',
+    '...krrrrrrrrk...',
+    '....kkkkkkkk....',
+    '....kRRRRRRk....',
+    '.....kkkkkk.....',
+  ], { steam: true, hunger: 2 });
+
+  F('sandwich', 'サンドイッチ', 'meal', [
+    '.......k',
+    '......kq',
+    '.....kqq',
+    '....kqqq',
+    '...kqqqq',
+    '..kqqqqq',
+    '.kqqqqqq',
+    'kgGgGgGg',
+    'kyyyyyyy',
+    'krrrrrrr',
+    'kqqqqqqq',
+    '.kkkkkkk',
+  ], { mirror: true });
+
+  F('curry', 'カレー', 'meal', [
+    '....kkkkkkkk....',
+    '..kkllllllllkk..',
+    '.klTTTTTwwwwwlk.',
+    'kltTtTTtwwwwwwlk',
+    'klTTtrTTTwwwwwlk',
+    'kltTTqTtTTwwwwlk',
+    '.klTTTTTTTTwwlk.',
+    '..kkllllllllkk..',
+    '....kkkkkkkk....',
+  ], { steam: true, hunger: 2 });
+
+  F('pan', 'メロンパン', 'meal', [
+    '....kkkk',
+    '..kkyyyy',
+    '.kyyYyyY',
+    '.kyYyyYy',
+    'kyyyYyyY',
+    'kyYyyYyy',
+    'kYyyYyyY',
+    'kYYyyYyy',
+    '.kYYYYYY',
+    '..kkkkkk',
+  ], { mirror: true });
+
+  F('sushi', 'おすし', 'meal', [
+    '................',
+    '..kkkkk..kkkkk..',
+    '.k66666kk6r666k.',
+    'k6w6666kkr66w66k',
+    'kwwwwwwkkwwwwwwk',
+    'kwwwwwlkkwwwwwlk',
+    '.kkkkkk..kkkkkk.',
+  ], { hunger: 1, happy: 1 });
+
+  // ======== おやつ ========
+  F('cake', 'ショートケーキ', 'snack', [
+    '......GG',
+    '.....rrr',
+    '.....rRr',
+    '......rr',
+    '..kkkkkk',
+    '.kwwxwww',
+    'kwwwwwww',
+    'kxxwxxwx',
+    'kqqqqqqq',
+    'kxxxxxxx',
+    'kqqqqqqq',
+    'kwwwwwww',
+    '.kkkkkkk',
+  ], { mirror: true, happy: 2 });
+
+  F('donut', 'ドーナツ', 'snack', [
+    '....kkkkkkkk....',
+    '..kkXxxXXXXXkk..',
+    '.kXXXXyXXuXXXXk.',
+    'kXXuXXXXXXXXyXXk',
+    'kXXXXXkkkkXXXXXk',
+    'kXyXXk....kXXuXk',
+    'kXXXXk....kXXXXk',
+    'knXXXXkkkkXXXXnk',
+    'knnXXXXXXXXXXnnk',
+    '.knnnXXwXXXnnnk.',
+    '..kknnnnnnnnkk..',
+    '....kkkkkkkk....',
+  ], { pal: { X: '#ff8fc0' } });
+
+  F('ice', 'アイス', 'snack', [
+    '.....kkk',
+    '...kkxxx',
+    '..kxxxxx',
+    '.kxwxxxx',
+    '.kxxxxxx',
+    'kxxxxxxx',
+    'kPxPxxPx',
+    '.kknnnnn',
+    '..knNnNn',
+    '..knnNnn',
+    '...knNnN',
+    '...knnnn',
+    '....knNn',
+    '.....knn',
+    '......kn',
+    '.......k',
+  ], { mirror: true });
+
+  F('purin', 'プリン', 'snack', [
+    '......rr',
+    '......rw',
+    '....kkkk',
+    '...kCCCC',
+    '..kCCCCC',
+    '..kyCyyC',
+    '.kyyyyyy',
+    '.kyqyyyy',
+    'kyyyyyyy',
+    'kYyyyyyy',
+    'kkkkkkkk',
+    'kwwwwwww',
+    '.kkkkkkk',
+  ], { mirror: true, pal: { C: '#9a5a1e' } });
+
+  F('macaron', 'マカロン', 'snack', [
+    '...kkkkk',
+    '.kkxxxxx',
+    'kxxwwxxx',
+    'kxxxxxxx',
+    'kPxPxPxP',
+    'kwwwwwww',
+    'kPxPxPxP',
+    'kxxxxxxx',
+    '.kkxxxxx',
+    '...kkkkk',
+  ], { mirror: true });
+
+  F('candy', 'キャンディ', 'snack', [
+    'kk...kkkkkk...kk',
+    'kxk.kyyyyyyk.kxk',
+    'kxxkyyrryyyykxxk',
+    'kxxkyrryyyrrkxxk',
+    'kxxkyyyyrrrykxxk',
+    'kxk.kyyyyyyk.kxk',
+    'kk...kkkkkk...kk',
+  ], { weight: 1 });
+
+  F('cookie', 'クッキー', 'snack', [
+    '....kkkkkkkk....',
+    '..kkCCCCCCCCkk..',
+    '.kCCNCCCCCCCCCk.',
+    '.kCCCCCCCNNCCCk.',
+    'kCCCCCCCCNCCCCDk',
+    'kCNNCCCCCCCCCCDk',
+    'kCCNCCCCNCCCCCDk',
+    'kCCCCCCCNNCCCDDk',
+    '.kDCCCCCCCCCDDk.',
+    '.kDDDCCCCDDDDDk.',
+    '..kkDDDDDDDDkk..',
+    '....kkkkkkkk....',
+  ], { pal: { C: '#eab878', D: '#c8884a' }, weight: 1 });
+
+  F('parfait', 'パフェ', 'snack', [
+    '.......G',
+    '......rr',
+    '....wwrr',
+    '...wwwww',
+    '..kwwwww',
+    '.kNNNNNN',
+    '.kyyyyyy',
+    '..kxxxxx',
+    '..kwwwww',
+    '...kNNNN',
+    '....kjjj',
+    '.....kjj',
+    '......kj',
+    '......kj',
+    '....kkjj',
+    '...kkkkk',
+  ], { mirror: true, happy: 2, weight: 3 });
+
+  F('milk', 'いちごミルク', 'snack', [
+    '..........kk....',
+    '.........kPk....',
+    '........kPk.....',
+    '...kkkkkkPkkk...',
+    '...kjjjjkjjjk...',
+    '...kxxxxxxxxk...',
+    '...kxwxxxxxxk...',
+    '...kxwxxxxxxk...',
+    '....kxxxxxxk....',
+    '....kxxxxxxk....',
+    '....kxxxxxxk....',
+    '.....kkkkkk.....',
+  ], { drink: true, weight: 1 });
+
+  // ---- bite masks ('#' = eaten), aligned to the RIGHT edge of the food ----
+  TM.BITE = [
+    TM.spr([
+      '...#####',
+      '..######',
+      '..######',
+      '...#####',
+      '....####',
+      '...#####',
+      '..######',
+      '..######',
+      '...#####',
+      '....####',
+      '...#####',
+      '..######',
+      '..######',
+      '...#####',
+      '....####',
+      '...#####',
+    ]),
+    TM.spr([
+      '........#####',
+      '.......######',
+      '......#######',
+      '......#######',
+      '.......######',
+      '......#######',
+      '.....########',
+      '......#######',
+      '.......######',
+      '......#######',
+      '.....########',
+      '......#######',
+      '.......######',
+      '......#######',
+      '.....########',
+      '......#######',
+    ].map((r) => '###' + r)),
+  ];
+  TM.CRUMBS = TM.spr([
+    '..n.....',
+    '.....n..',
+    'n..n...n',
+  ]);
+})();
+
+</script>
+<script>
+/*
+ * Utility sprites (effects, bath, toilet …) in TM.ITEM
+ * and TOYS (おもちゃ) registered with TM.register('toy', …).
+ *   toy.play: 'bounce' | 'hug' | 'float' | 'spin' | 'stack' (animation style)
+ */
+(function () {
+  const S = (rows, o) => TM.spr(rows, o || {});
+  const I = (TM.ITEM = {});
+
+  // ---------- effects ----------
+  I.heart = S(['.rr.rr.', 'rwrrrrr', 'rrrrrrr', '.rrrrr.', '..rrr..', '...r...']);
+  I.heartS = S(['r.r', 'rrr', '.r.']);
+  I.note = S(['...kk', '..kkk', '..k..', '..k..', 'kkk..', 'kkk..']);
+  I.star = S(['...y...', '...y...', '..yyy..', 'yyyyyyy', '.yyyyy.', '.yy.yy.', 'y.....y']);
+  I.sparkle = [S(['.y.', 'ywy', '.y.']), S(['..y..', '..y..', 'yywyy', '..y..', '..y..']), S(['y...y', '.y.y.', '..w..', '.y.y.', 'y...y'])];
+  I.zzz = [S(['kkk', '.k.', 'kkk']), S(['kkkk', '..k.', '.k..', 'kkkk'])];
+  I.sweat = S(['.j', 'ju', 'uu']);
+  I.anger = S(['r.r', '.r.', 'r.r']);
+  I.question = S(['.kkk.', 'k...k', '...k.', '..k..', '.....', '..k..']);
+  I.exclaim = S(['kk', 'kk', 'kk', '..', 'kk']);
+  I.bubble = [S(['.jj.', 'j.wj', 'j..j', '.jj.']), S(['.jjj.', 'j..wj', 'j...j', 'j...j', '.jjj.']), S(['jj', 'jj'])];
+  I.steam = [S(['.l.', 'l..', '.l.', '..l', '.l.']), S(['l..', '.l.', '..l', '.l.', 'l..'])];
+  I.dust = S(['.m.', 'mlm', '.m.']);
+  I.skull = S(['.wwwww.', 'wwwwwww', 'wkwwwkw', 'wkwwwkw', 'wwwkwww', '.wwwww.', '.wkwkw.']);
+  I.thought = S(['..kkkkkkkkk..', '.kwwwwwwwwwk.', 'kwwwwwwwwwwwk', 'kwwwwwwwwwwwk', 'kwwwwwwwwwwwk', 'kwwwwwwwwwwwk', 'kwwwwwwwwwwwk', 'kwwwwwwwwwwwk', '.kwwwwwwwwwk.', '..kkkkwkkkk..', '.....kwk.....', '......k......']);
+  I.poop = [
+    S(['....N....', '...NnN...', '..NnnnN..', '..NwnnnN.', '.NnnnnnN.', '.NnwnnnnN', 'NnnnnnnnN', '.NNNNNNN.']),
+  ];
+  I.stink = [S(['.M..', 'M...', '.M..', '..M.']), S(['..M.', '.M..', 'M...', '.M..'])];
+
+  // ---------- bath ----------
+  I.tub = S([
+    '..............................',
+    'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
+    'kwwwwwwwwwwwwwwwwwwwwwwwwwwwlk',
+    '.kjjjjjjjjjjjjjjjjjjjjjjjjjjk.',
+    '.kwwwwwwwwwwwwwwwwwwwwwwwwwlk.',
+    '.kwwwwwwwwwwwwwwwwwwwwwwwwwlk.',
+    '.kwwwwwwwwwwwwwwwwwwwwwwwwwlk.',
+    '..kwwwwwwwwwwwwwwwwwwwwwwwlk..',
+    '...kllllllllllllllllllllllk...',
+    '....kkkkkkkkkkkkkkkkkkkkkk....',
+    '....kyk..............kyk......',
+    '....kkk..............kkk......',
+  ]);
+  I.foam = S([
+    '..ww....www...ww......www.....',
+    '.wwjw..wwwwwwwjww..wwwwwww....',
+    'wwwwwwwwjwwwwwwwwwwwwjwwwwww..',
+  ]);
+  I.duck = S(['..yyy...', '.yyyky..', '.yyyyytt', '..yyy...', 'yyyyyyy.', 'yyyyyyy.', '.yyyyy..']);
+  I.shower = S([
+    '......kkkk',
+    '.....kmmmk',
+    '....kmmk..',
+    '...kmmk...',
+    'kkkkkkk...',
+    'kmmmmmk...',
+    '.kkkkk....',
+  ]);
+  I.drop = S(['.u', 'uu', 'uu']);
+  I.towel = S(['kkkkkkkkkk', 'kxxxxxxxxk', 'kxPxxPxxPk', 'kxxxxxxxxk', 'kxxxxxxxxk', 'kkkkkkkkkk']);
+
+  // ---------- toilet ----------
+  I.toilet = S([
+    '.kkkkkkkk.......',
+    '.kwwwwwwk.......',
+    '.kwwmwwwk.......',
+    '.kwwwwwwk.......',
+    '.kkkkkkkk.......',
+    '..kwwwwk........',
+    'kkkkkkkkkkkkkkk.',
+    'klllllllllllllk.',
+    'kwwwwwwwwwwwwwk.',
+    '.kwwwwwwwwwwwk..',
+    '..kwwwwwwwwwk...',
+    '...kwwwwwwwk....',
+    '....kwwwwwk.....',
+    '....kwwwwwk.....',
+    '...kkkkkkkkk....',
+  ]);
+  // front part of the bowl, drawn over a sitting pet
+  I.toiletFront = S([
+    'kkkkkkkkkkkkkkk.',
+    'klllllllllllllk.',
+    'kwwwwwwwwwwwwwk.',
+    '.kwwwwwwwwwwwk..',
+    '..kwwwwwwwwwk...',
+    '...kwwwwwwwk....',
+    '....kwwwwwk.....',
+    '....kwwwwwk.....',
+    '...kkkkkkkkk....',
+  ]);
+  I.wave = S([
+    '....jj..',
+    '..jjuujj',
+    '.juuuuuu',
+    'juuwuuuu',
+    'juuuuuuu',
+    'juuuuwuu',
+    'juuuuuuu',
+    'juuuuuuu',
+  ]);
+
+  // ---------- medicine ----------
+  I.syringe = S([
+    'k...........',
+    '.k..........',
+    '..kkkkkkkk.k',
+    '..kjjjrrrkkk',
+    '..kjjjrrrkkk',
+    '..kkkkkkkk.k',
+  ]);
+  I.pill = S(['.kkkk.', 'krrwwk', 'krrwwk', '.kkkk.']);
+  I.bandage = S(['.kkkkkkkk.', 'kssnsnsssk', 'kssnsnsssk', '.kkkkkkkk.']);
+
+  // ---------- eating furniture ----------
+  I.table = S([
+    'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
+    'k777777777777777777777777777777k',
+    'k888888888888888888888888888888k',
+    'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
+    '...k8k....................k8k...',
+    '...k8k....................k8k...',
+    '...k8k....................k8k...',
+    '...k9k....................k9k...',
+    '...kkk....................kkk...',
+  ]);
+  I.plate = S(['kkkkkkkkkkkkkkkkkkkk', 'kwwwwwwwwwwwwwwwwwwk', '.kllllllllllllllllk.', '..kkkkkkkkkkkkkkkk..']);
+  I.cup = S(['kkkkkk.', 'kwwwwkk', 'kwwwwkk', '.kkkk..']);
+  I.bed = S([
+    'kkkk........................',
+    'k88k........................',
+    'k88kkkkkkkkkkkkkkkkkkkkkkkkk',
+    'k88kwwwwwkxxxxxxxxxxxxxxxxxk',
+    'k88kwwwwwkxPxxxPxxxPxxxPxxxk',
+    'k88kkkkkkkxxxxxxxxxxxxxxxxxk',
+    'k88kxxxxxxxxxxxxxxxxxxxxxxxk',
+    'k88kkkkkkkkkkkkkkkkkkkkkkkkk',
+    'k88k8888888888888888888888k.',
+    'kkkkkkkkkkkkkkkkkkkkkkkkkkk.',
+    'k9k.....................k9k.',
+    'kkk.....................kkk.',
+  ]);
+  // big bed for sleeping: headboard (behind) + pillow + quilt (in front)
+  I.headboard = S([
+    '....kkkkkkkkkkkkkkkkkk',
+    '..kk888888888888888888',
+    '.k88777777777777777777',
+    '.k87777777777777777777',
+    'k887777777777kkk777777',
+    'k87777777777kPPPk77777',
+    'k8777777777kPPPPPk7777',
+    'k87777777777kPPPPk7777',
+    'k877777777777kPPk77777',
+    'k8777777777777kk777777',
+    'k877777777777777777777',
+    'k888888888888888888888',
+  ], { mirror: true });
+  I.pillow = S([
+    '...kkkkkkkkk',
+    '.kkwwwwwwwww',
+    'kwwwwwwwwwww',
+    'kllwwwwwwwww',
+    '.kkkkkkkkkkk',
+  ], { mirror: true });
+  I.quilt = S([
+    '...kkkkkkkkkkkkkkkkkkk',
+    '.kkxxxxxxxxxxxxxxxxxxx',
+    'kxxxxPxxxxxxPxxxxxxPxx',
+    'kxxxPPPxxxxPPPxxxxPPPx',
+    'kxxxxPxxxxxxPxxxxxxPxx',
+    'kxxxxxxxxxxxxxxxxxxxxx',
+    'kxPxxxxxxPxxxxxxPxxxxx',
+    'kPPPxxxxPPPxxxxPPPxxxx',
+    'kxPxxxxxxPxxxxxxPxxxxx',
+    'kkkkkkkkkkkkkkkkkkkkkk',
+    'kwwwwwwwwwwwwwwwwwwwww',
+    'klllllllllllllllllllll',
+    'kkkkkkkkkkkkkkkkkkkkkk',
+    'k9k...................',
+    'kkk...................',
+  ], { mirror: true });
+
+  // ---------- outing ----------
+  I.present = S(['..r.r..', '...r...', 'kkkkkkk', 'kxxrxxk', 'kkkkkkk', 'kxxrxxk', 'kxxrxxk', 'kkkkkkk']);
+  I.ring = S(['.yyy.', 'y.u.y', 'y...y', 'y...y', '.yyy.']);
+  I.bell = S(['...y...', '..yyy..', '.yyyyy.', '.yywyy.', '.yyyyy.', 'yyyyyyy', '...Y...']);
+
+  // ================= TOYS (おもちゃ) =================
+  const T = (id, name, play, rows, o) =>
+    TM.register('toy', Object.assign({ id, name, play, spr: S(rows, { mirror: o && o.mirror, pal: o && o.pal }) }, o || {}));
+
+  T('ball', 'ボール', 'bounce', [
+    '..kkkk..',
+    '.kwrrwk.',
+    'kwwrrwwk',
+    'kuwrrwyk',
+    'kuuwwyyk',
+    'kuuwwyyk',
+    '.kuwwyk.',
+    '..kkkk..',
+  ], { happy: 1 });
+
+  T('kuma', 'くまのぬいぐるみ', 'hug', [
+    '.kk....',
+    'k7kkkkk',
+    'k7k7777',
+    '.k77777',
+    'k77k777',
+    'k777777',
+    '.k77nn7',
+    '..k7777',
+    '.kkk777',
+    'k77k777',
+    'k77k777',
+    '.kk7777',
+    '..k77kk',
+    '..kkk..',
+  ], { mirror: 'odd', happy: 1 });
+
+  T('balloon', 'ふうせん', 'float', [
+    '..kkk..',
+    '.kxxxk.',
+    'kxwxxxk',
+    'kxwxxxk',
+    'kxxxxxk',
+    '.kxxxk.',
+    '..kPk..',
+    '...k...',
+    '....k..',
+    '...k...',
+    '..k....',
+    '...k...',
+  ], { happy: 1 });
+
+  T('yoyo', 'ヨーヨー', 'spin', [
+    '...k...',
+    '...k...',
+    '...k...',
+    '.kkkkk.',
+    'kuuuuuk',
+    'kuwuuuk',
+    'kkkkkkk',
+    'kuuuuuk',
+    '.kkkkk.',
+  ], { happy: 1 });
+
+  T('tsumiki', 'つみき', 'stack', [
+    '....kkkk....',
+    '....kyyk....',
+    '....kyyk....',
+    '..kkkkkkkk..',
+    '..kuukkrrk..',
+    '..kuukkrrk..',
+    'kkkkkkkkkkkk',
+    'kggggggrrrrk',
+    'kggggggrrrrk',
+    'kkkkkkkkkkkk',
+  ], { happy: 1 });
+
+  T('mic', 'マイク', 'sing', [
+    '.kkk.',
+    'kmlmk',
+    'kmmmk',
+    '.kkk.',
+    '..k..',
+    '..P..',
+    '..P..',
+    '..P..',
+    '..k..',
+  ], { happy: 2 });
+})();
+
+</script>
+<script>
+/*
+ * MENU ICONS (12x12, hand typed). Order of registration = order in the menu.
+ * { id, name, scene }  -> selecting it starts TM.scenes[scene]
+ */
+(function () {
+  const IC = (id, name, scene, rows, o) =>
+    TM.register('icon', Object.assign({ id, name, scene, spr: TM.spr(rows, { name: 'icon:' + id }) }, o || {}));
+
+  IC('status', 'ステータス', 'status', [
+    '.kk.kk......',
+    'krrkrrk.....',
+    'krrrrrk.....',
+    '.krrrk......',
+    '..krk.......',
+    '...k........',
+    '............',
+    'kkkkkkkkkkkk',
+    'kyyyyyyymmmk',
+    'kyyyyyyymmmk',
+    'kkkkkkkkkkkk',
+    '............',
+  ]);
+  IC('food', 'ごはん', 'food', [
+    '.....k......',
+    '....kwk.....',
+    '...kwwwk....',
+    '..kwwwwwk...',
+    '.kwwwwwwwk..',
+    '.kwwwwwwwk..',
+    'kwwkkkkkwwk.',
+    'kwwkzzzkwwk.',
+    'kwwkzzzkwwk.',
+    '.kkkkkkkkk..',
+    '..........k.',
+    '.........k..',
+  ], { });
+  IC('toilet', 'トイレ', 'toilet', [
+    '.kkkk.......',
+    '.kwwk.......',
+    '.kwwk.......',
+    '.kkkk.......',
+    'kkkkkkkkk...',
+    'kllllllllk..',
+    'kwwwwwwwwk..',
+    '.kwwwwwwk...',
+    '..kwwwwk....',
+    '..kwwwwk....',
+    '.kkkkkkkk...',
+    '............',
+  ]);
+  IC('bath', 'おふろ', 'bath', [
+    '.j...j......',
+    '..j.j..yyy..',
+    '.j...jyyky..',
+    '......yyyytt',
+    '......yyyy..',
+    'kkkkkkkkkkkk',
+    'kjjjjjjjjjjk',
+    '.kwwwwwwwwk.',
+    '.kwwwwwwwlk.',
+    '..kllllllk..',
+    '...kkkkkk...',
+    '...k....k...',
+  ]);
+  IC('light', 'でんき', 'light', [
+    '....kkkk....',
+    '...kyyyyk...',
+    '..kyywyyyk..',
+    '..kywyyyyk..',
+    '..kyyyyyyk..',
+    '...kyyyyk...',
+    '....kyyk....',
+    '....kmmk....',
+    '....kMMk....',
+    '....kmmk....',
+    '.....kk.....',
+    '............',
+  ]);
+  IC('medicine', 'おくすり', 'medicine', [
+    '........kk..',
+    '.......kwwk.',
+    '......kwwrk.',
+    '.....kwwrrk.',
+    '....kwwrrk..',
+    '...kxwrrk...',
+    '..kxxxrk....',
+    '.kxxxxk.....',
+    '.kxxxk......',
+    '..kkk.......',
+    '............',
+    '............',
+  ]);
+  IC('toy', 'おもちゃ', 'toy', [
+    '.kk....kk...',
+    'k77kkkk77k..',
+    'k7k7777k7k..',
+    '.k777777k...',
+    '.k7k77k7k...',
+    '.k777777k...',
+    '..k7nn7k....',
+    '.kkk77kkk...',
+    'k77k77k77k..',
+    'k77777777k..',
+    '.k77kk77k...',
+    '..kk..kk....',
+  ]);
+  IC('game', 'あそぶ', 'game', [
+    '............',
+    '..kkkkkkkk..',
+    '.kvvvvvvvvk.',
+    'kvvkvvvvrvvk',
+    'kvkkkvvrvrvk',
+    'kvvkvvvvrvvk',
+    'kvvvvvvvvvvk',
+    'kvvvkkkkvvvk',
+    '.kkk....kkk.',
+    '............',
+    '............',
+    '............',
+  ]);
+  IC('outing', 'おでかけ', 'outing', [
+    '.....kk.....',
+    '....kPPk....',
+    '...kPPPPk...',
+    '..kPPPPPPk..',
+    '.kkkkkkkkkk.',
+    '..k8888888k.',
+    '..k8kkkk88k.',
+    '..k8k22k88k.',
+    '..k8k22k88k.',
+    '..k8kyyk88k.',
+    '..k8k22k88k.',
+    '.kkkkkkkkkkk',
+  ]);
+  IC('room', 'もようがえ', 'room', [
+    '............',
+    '..kkkkkkkk..',
+    '.kxxxxxxxxk.',
+    '.kxPxxxxPxk.',
+    '.kxxxxxxxxk.',
+    'kkkkkkkkkkkk',
+    'kxkPPPPPPkxk',
+    'kxkPPPPPPkxk',
+    'kxkkkkkkkkxk',
+    'kkkkkkkkkkkk',
+    '.k........k.',
+    '............',
+  ]);
+  IC('family', 'かけいず', 'family', [
+    '.kk.kk......',
+    'kPPkPPk.....',
+    'kPPPPPk.....',
+    '.kPPPk......',
+    '..kPk.......',
+    '...k........',
+    '...k........',
+    '...kkkkk....',
+    '...k...k....',
+    '..kyk.kuk...',
+    '..kyk.kuk...',
+    '...k...k....',
+  ]);
+  IC('zukan', 'ずかん', 'zukan', [
+    '............',
+    '.kkkkk.kkkk.',
+    'kgggggkggggk',
+    'kgwwwgkgwwgk',
+    'kgwwwgkgwwgk',
+    'kgggggkggggk',
+    'kgwwwgkgwwgk',
+    'kgggggkggggk',
+    'kgggggkggggk',
+    '.kkkkkkkkkk.',
+    '............',
+    '............',
+  ]);
+})();
+
+</script>
+<script>
+/*
+ * FURNITURE and ROOMS (living room themes).
+ *
+ * Furniture sprites may use the sky slots  A (sky) / C (cloud or star)
+ * which change with the real time of day (see TM.SKY).
+ *
+ * TM.register('furniture', { id, name, spr })
+ * TM.register('room', { id, name, wall, floor, board, items:[{id, x, y}] })
+ *   x = left, y = bottom (world px). Floor starts at y = TM.FLOOR_Y.
+ */
+(function () {
+  const S = (rows, o) => TM.spr(rows, o || {});
+  TM.FLOOR_Y = 74;
+
+  // sky palettes for windows
+  TM.SKY = {
+    morning: { id: 'sky-m', A: '#ffd6b0', C: '#ffffff' },
+    day: { id: 'sky-d', A: '#8fd3ff', C: '#ffffff' },
+    evening: { id: 'sky-e', A: '#ff9e7a', C: '#ffd84a' },
+    night: { id: 'sky-n', A: '#1c2448', C: '#ffe38a' },
+  };
+
+  const FU = (id, name, rows, o) => TM.register('furniture', Object.assign({ id, name, spr: S(rows, { mirror: o && o.mirror, pal: o && o.pal, name: 'fu:' + id }) }, o || {}));
+
+  FU('window', 'まど', [
+    'kkkkkkkkkkkkkkkkkkkkkkkk',
+    'k0000000000kk0000000000k',
+    'k0AAAAAAAAAkk0AAAAAAAA0k',
+    'k0AACCAAAAAkk0AAAAAAAA0k',
+    'k0ACCCCAAAAkk0AAAAACCA0k',
+    'k0AAAAAAAAAkk0AAAACCCC0k',
+    'k0AAAAAAAAAkk0AAAAAAAA0k',
+    'k0AAAAAAAAAkk0AAAAAAAA0k',
+    'kkkkkkkkkkkkkkkkkkkkkkkk',
+    'k0AAAAAAAAAkk0AAAAAAAA0k',
+    'k0AAAAAAAAAkk0ACCAAAAA0k',
+    'k0AAAACAAAAkk0AAAAAAAA0k',
+    'k0AAAAAAAAAkk0AAAAAAAA0k',
+    'k0000000000kk0000000000k',
+    'kkkkkkkkkkkkkkkkkkkkkkkk',
+    '.k8888888888888888888k..',
+    '..kkkkkkkkkkkkkkkkkkk...',
+  ]);
+
+  FU('heartwin', 'ハートのまど', [
+    '...kkkk....kkkk...',
+    '..kPPPPk..kPPPPk..',
+    '.kPAAAAPkkPAAAAPk.',
+    'kPAACCAAPPAAAAAAPk',
+    'kPACCCCAAAAAACAAPk',
+    'kPAAAAAAAAAACCCAPk',
+    'kPAAAAAAAAAAAAAAPk',
+    '.kPAAAAAAAAAAAAPk.',
+    '..kPAAAAAAAAAAPk..',
+    '...kPAAAAAAAAPk...',
+    '....kPAAAAAAPk....',
+    '.....kPAAAAPk.....',
+    '......kPAAPk......',
+    '.......kPPk.......',
+    '........kk........',
+  ]);
+
+  FU('porthole', 'まるまど', [
+    '....kkkkkkkk....',
+    '..kkllllllllkk..',
+    '.kllmmmmmmmmllk.',
+    '.klmAAAAAACAmlk.',
+    'klmAAAAAAAAAAmlk',
+    'klmACAAAAAAAAmlk',
+    'klmAAAAAAAACAmlk',
+    'klmAAAAAAAAAAmlk',
+    'klmAAAAAAAAAAmlk',
+    'klmAAACAAAAAAmlk',
+    '.klmAAAAAAAAmlk.',
+    '.kllmmmmmmmmllk.',
+    '..kkllllllllkk..',
+    '....kkkkkkkk....',
+  ]);
+
+  FU('shoji', 'しょうじ', [
+    'kkkkkkkkkkkkkkkkkkkkkk',
+    'k88888888888888888888k',
+    'k8q8q8q8q88q8q8q8q8q8k',
+    'k88888888888888888888k',
+    'k8q8q8q8q88q8q8q8q8q8k',
+    'k88888888888888888888k',
+    'k8q8q8q8q88q8q8q8q8q8k',
+    'k88888888888888888888k',
+    'k8q8q8q8q88q8q8q8q8q8k',
+    'k88888888888888888888k',
+    'k8q8q8q8q88q8q8q8q8q8k',
+    'k88888888888888888888k',
+    'kkkkkkkkkkkkkkkkkkkkkk',
+  ]);
+
+  FU('sofa', 'ソファ', [
+    '..kkkkkkkkkkkkkkkkkkkk..',
+    '.kxxxxxxxxxxxxxxxxxxxxk.',
+    '.kxPxxxxPxxxxPxxxxPxxxk.',
+    '.kxxxxxxxxxxxxxxxxxxxxk.',
+    'kkkxxxxxxxxxxxxxxxxxxkkk',
+    'kxxkkkkkkkkkkkkkkkkkkxxk',
+    'kxxkxxxxxxxxxxxxxxxxkxxk',
+    'kxxkPPPPPPPPPPPPPPPPkxxk',
+    'kkkkkkkkkkkkkkkkkkkkkkkk',
+    'kPPPPPPPPPPPPPPPPPPPPPPk',
+    'kkkkkkkkkkkkkkkkkkkkkkkk',
+    '.k9k................k9k.',
+    '.kkk................kkk.',
+  ]);
+
+  FU('starlamp', 'ほしのランプ', [
+    '...y...',
+    '...y...',
+    '..yyy..',
+    'yyywyyy',
+    '.yyyyy.',
+    '.yy.yy.',
+    'y.....y',
+    '...k...',
+    '...k...',
+    '...k...',
+    '...k...',
+    '...k...',
+    '...k...',
+    '...k...',
+    '..kPk..',
+    '.kPPPk.',
+    'kkkkkkk',
+  ]);
+
+  FU('plant', 'かんようしょくぶつ', [
+    '....G..G....',
+    '...GgG.GgG..',
+    '..GgggGgggG.',
+    '.GgghgggghgG',
+    '.GggGggggGgG',
+    'GgghGgGgGgG.',
+    'GgGgggGggggG',
+    '.GGgGgGgGGG.',
+    '...GG.GGG...',
+    '..kkkkkkkk..',
+    '..knnnnnnk..',
+    '...kn88nk...',
+    '...knnnnk...',
+    '...kkkkkk...',
+  ]);
+
+  FU('shelf', 'たな', [
+    'kkkkkkkkkkkkkkkk',
+    'k88888888888888k',
+    'k8kkk8kk88kkkk8k',
+    'k8krk8kuk8kyyk8k',
+    'k8krk8kuk8kyyk8k',
+    'k8kkk8kkk8kkkk8k',
+    'kkkkkkkkkkkkkkkk',
+    'k88888888888888k',
+    'k88kkk888kPPk88k',
+    'k88kgk88kPwwPk8k',
+    'k88kkk888kPPk88k',
+    'kkkkkkkkkkkkkkkk',
+    'k9k..........k9k',
+    'kkk..........kkk',
+  ]);
+
+  FU('clock', 'とけい', [
+    '..kkkkkk..',
+    '.kwwwkwwk.',
+    'kwwwwkwwwk',
+    'kwwwwkwwwk',
+    'kkwwwkkkkk',
+    'kwwwwwwwwk',
+    'kwwwwwwwwk',
+    '.kwwwwwwk.',
+    '..kkkkkk..',
+  ]);
+
+  FU('frame', 'がくぶち', [
+    'kkkkkkkkkkkkkk',
+    'kyyyyyyyyyyyyk',
+    'ky2222222222yk',
+    'ky2222y22222yk',
+    'ky2222222222yk',
+    'ky22g222222gyk',
+    'ky2ggg2222ggyk',
+    'kyggggggggggyk',
+    'kyyyyyyyyyyyyk',
+    'kkkkkkkkkkkkkk',
+  ]);
+
+  FU('rug', 'ラグ', [
+    '......kkkkkkkkkkkkkkkkkkkkkkkkkkkk......',
+    '...kkk5555555555555555555555555555kkk...',
+    '.kk55555x55555x55555x55555x55555x5555kk.',
+    'k555x55555x55555x55555x55555x55555x5555k',
+    '.kk55555x55555x55555x55555x55555x5555kk.',
+    '...kkk5555555555555555555555555555kkk...',
+    '......kkkkkkkkkkkkkkkkkkkkkkkkkkkk......',
+  ]);
+
+  FU('dresser', 'たんす', [
+    'kkkkkkkkkkkkkkkkkk',
+    'k7777777777777777k',
+    'kkkkkkkkkkkkkkkkkk',
+    'k777777kyk7777777k',
+    'k777777kkk7777777k',
+    'kkkkkkkkkkkkkkkkkk',
+    'k777777kyk7777777k',
+    'k777777kkk7777777k',
+    'kkkkkkkkkkkkkkkkkk',
+    'k777777kyk7777777k',
+    'k777777kkk7777777k',
+    'kkkkkkkkkkkkkkkkkk',
+    'k8k............k8k',
+    'kkk............kkk',
+  ]);
+
+  FU('caketable', 'ケーキテーブル', [
+    '........rr........',
+    '.......rrrr.......',
+    '......kkkkkk......',
+    '....kkwwwwwwkk....',
+    '...kwwwxwwxwwwk...',
+    '...kxxxxxxxxxxk...',
+    '...kqqqqqqqqqqk...',
+    'kkkkkkkkkkkkkkkkkk',
+    'kxPxPxPxPxPxPxPxPk',
+    'kkkkkkkkkkkkkkkkkk',
+    '.......kxxk.......',
+    '.......kxxk.......',
+    '.......kxxk.......',
+    '.....kkkkkkkk.....',
+  ]);
+
+  FU('lollipop', 'キャンディランプ', [
+    '...kkkkk...',
+    '..kPPwPPk..',
+    '.kPwwPPwPk.',
+    'kPwPPwwPPwk',
+    'kPPwwPPwwPk',
+    'kwPPwPPwPPk',
+    '.kPwwPPwPk.',
+    '..kPPPPPk..',
+    '...kkkkk...',
+    '.....k.....',
+    '.....k.....',
+    '.....k.....',
+    '.....k.....',
+    '.....k.....',
+    '.....k.....',
+    '...kkkkk...',
+  ]);
+
+  FU('planet', 'わくせいランプ', [
+    '......kkkk......',
+    '....kkvvvvkk....',
+    '...kvvwvvvvvk...',
+    'kkkkkkkkkkkkkkkk',
+    'kyyyyyyyyyyyyyyk',
+    'kkkkkkkkkkkkkkkk',
+    '...kvvvvvvVVk...',
+    '....kkVVVVkk....',
+    '......kkkk......',
+    '.......kk.......',
+    '.......kk.......',
+    '.......kk.......',
+    '.....kkkkkk.....',
+  ]);
+
+  FU('rocket', 'ロケット', [
+    '.....kk.....',
+    '....kwwk....',
+    '...kwwwwk...',
+    '...kwuuwk...',
+    '...kwuuwk...',
+    '...kwwwwk...',
+    '..kkwwwwkk..',
+    '.krkwwwwkrk.',
+    'krrkwwwwkrrk',
+    'kkkkkkkkkkkk',
+    '...kyttyk...',
+    '....kyyk....',
+  ]);
+
+  FU('chochin', 'ちょうちん', [
+    '....kkkk....',
+    '..kkkkkkkk..',
+    '.krrrrrrrrk.',
+    'krrrrrrrrrrk',
+    'kRRRRRRRRRRk',
+    'krrrwwwwrrrk',
+    'krrrrrrrrrrk',
+    'kRRRRRRRRRRk',
+    '.krrrrrrrrk.',
+    '..kkkkkkkk..',
+    '....kkkk....',
+  ]);
+
+  FU('kotatsu', 'こたつ', [
+    '..kkkkkkkkkkkkkkkkkkkkkk..',
+    '..k88888888888888888888k..',
+    'kkkkkkkkkkkkkkkkkkkkkkkkkk',
+    'krrrrrrrrrrrrrrrrrrrrrrrrk',
+    'krrwrrrrrrwrrrrrrwrrrrrwrk',
+    'krrrrrrrrrrrrrrrrrrrrrrrrk',
+    'kRRRRRRRRRRRRRRRRRRRRRRRRk',
+    'kkkkkkkkkkkkkkkkkkkkkkkkkk',
+  ]);
+
+  FU('mikan', 'みかん', [
+    '...G..',
+    '.kkGk.',
+    'kttttk',
+    'ktyttk',
+    'kttttk',
+    '.kkkk.',
+  ]);
+
+  // ================= wall / floor tiles =================
+  const T = TM.TILE = {};
+  T.yume_wall = S([
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxPxPxx',
+    'xxxxxxx55xxPPPxx',
+    'xxxxxxx55xxxPxxx',
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxxxxxx',
+    'xxxxxxx55xxxxxxx',
+  ]);
+  T.yume_floor = S([
+    '55555555xxxxxxxx',
+    '5555555wxxxxxxxx',
+    '55555555xxxxxxxx',
+    '55555555xxxxxxxx',
+    'xxxxxxxx55555555',
+    'xxxxxxxx5555555w',
+    'xxxxxxxx55555555',
+    'xxxxxxxx55555555',
+  ]);
+  T.nat_wall = S([
+    '0000000000000000',
+    '0000000000000000',
+    '00h0000000000000',
+    '0hhg000000000000',
+    '00g0000000000000',
+    '0000000000000000',
+    '0000000000000000',
+    '0000000000000000',
+    '0000000000000000',
+    '0000000000000000',
+    '0000000000h00000',
+    '000000000hhg0000',
+    '0000000000g00000',
+    '0000000000000000',
+    '0000000000000000',
+    '0000000000000000',
+  ]);
+  T.nat_floor = S([
+    '7777777777777778',
+    '7777777777777778',
+    '8888888888888888',
+    '7777778777777777',
+    '7777778777777777',
+    '8888888888888888',
+    '7777777777877777',
+    '8888888888888888',
+  ]);
+  T.sweet_wall = S([
+    '4444444444444444',
+    '44ww444444444444',
+    '4wwww44444444444',
+    '44ww444444444444',
+    '4444444444444444',
+    '4444444444444444',
+    '4444444444xx4444',
+    '444444444xxxx444',
+    '4444444444xx4444',
+    '4444444444444444',
+    '4444444444444444',
+    '4444444444444444',
+    '4444444444444444',
+    '44yy444444444444',
+    '4yyyy44444444444',
+    '44yy444444444444',
+  ]);
+  T.sweet_floor = S([
+    'nnnnnnnNnnnnnnnN',
+    'nsnnnnnNnsnnnnnN',
+    'nnnnnnnNnnnnnnnN',
+    'NNNNNNNNNNNNNNNN',
+    'nnnNnnnnnnnNnnnn',
+    'nnnNnsnnnnnNnsnn',
+    'nnnNnnnnnnnNnnnn',
+    'NNNNNNNNNNNNNNNN',
+  ]);
+  T.space_wall = S([
+    'zzzzzzzzzzzzzzzz',
+    'zzzzzzzzzzzzwzzz',
+    'zzyzzzzzzzzzzzzz',
+    'zyyyzzzzzzzzzzzz',
+    'zzyzzzzzzzzzzzzz',
+    'zzzzzzzzzvzzzzzz',
+    'zzzzzzzzzzzzzzzz',
+    'zzzzzwzzzzzzzzzz',
+    'zzzzzzzzzzzzzzzz',
+    'zzzzzzzzzzzzyzzz',
+    'zzzzzzzzzzzyyyzz',
+    'zzwzzzzzzzzzyzzz',
+    'zzzzzzzzzzzzzzzz',
+    'zzzzzzzzzzzzzzzz',
+    'zzzzzzzuzzzzzzzz',
+    'zzzzzzzzzzzzzzzz',
+  ], { pal: { z: '#2e2a66' } });
+  T.space_floor = S([
+    'ZZZZZZZUZZZZZZZU',
+    'ZZZZZZZUZZZZZZZU',
+    'ZZZZZZZUZZZZZZZU',
+    'UUUUUUUUUUUUUUUU',
+    'ZZZUZZZZZZZUZZZZ',
+    'ZZZUZZZZZZZUZZZZ',
+    'ZZZUZZZZZZZUZZZZ',
+    'UUUUUUUUUUUUUUUU',
+  ]);
+  T.wa_wall = S([
+    'qqqqqqqqqqqqqqq8',
+    'qqqqqqqqqqqqqqq8',
+    'qqqqqqqqqqqqqqq8',
+    'qqqqqqqqqqqqqqq8',
+    'qqqqqqqqqqqqqqq8',
+    'qqqqqqqqqqqqqqq8',
+    'qqqqqqqqqqqqqqq8',
+    'qqqqqqqqqqqqqqq8',
+  ]);
+  T.wa_floor = S([
+    'hhhhhhhhhhhhhhhG',
+    'hghhhhhhhhhhhhhG',
+    'hhhhhhhhhhhhghhG',
+    'hhhhhhhhhhhhhhhG',
+    'hhhhhhhghhhhhhhG',
+    'hhhhhhhhhhhhhhhG',
+    'hhhhhghhhhhhhhhG',
+    'GGGGGGGGGGGGGGGG',
+  ]);
+
+  // ================= ROOMS =================
+  const R = (id, name, o) => TM.register('room', Object.assign({ id, name }, o));
+  R('yumekawa', 'ゆめかわルーム', {
+    wall: T.yume_wall, floor: T.yume_floor, board: ['#ffffff', '#f6c6ff', '#b48cf0'],
+    items: [
+      { id: 'heartwin', x: 55, y: 44 },
+      { id: 'starlamp', x: 8, y: 80 },
+      { id: 'frame', x: 20, y: 30 },
+      { id: 'sofa', x: 98, y: 82 },
+      { id: 'rug', x: 44, y: 116, floor: true },
+    ],
+  });
+  R('natural', 'ナチュラルルーム', {
+    wall: T.nat_wall, floor: T.nat_floor, board: ['#b07a4a', '#8a5a32', '#6a4020'],
+    items: [
+      { id: 'window', x: 52, y: 44 },
+      { id: 'clock', x: 16, y: 26 },
+      { id: 'shelf', x: 4, y: 82 },
+      { id: 'plant', x: 108, y: 82 },
+      { id: 'rug', x: 44, y: 116, floor: true },
+    ],
+  });
+  R('sweets', 'スイーツルーム', {
+    wall: T.sweet_wall, floor: T.sweet_floor, board: ['#ffd0e0', '#ff9ec2', '#ff6fa3'],
+    items: [
+      { id: 'window', x: 52, y: 44 },
+      { id: 'lollipop', x: 6, y: 82 },
+      { id: 'lollipop', x: 112, y: 82 },
+      { id: 'caketable', x: 96, y: 84 },
+    ],
+  });
+  R('space', 'うちゅうルーム', {
+    wall: T.space_wall, floor: T.space_floor, board: ['#6c48b0', '#b48cf0', '#10152e'],
+    items: [
+      { id: 'porthole', x: 56, y: 42 },
+      { id: 'planet', x: 6, y: 82 },
+      { id: 'rocket', x: 108, y: 82 },
+    ],
+  });
+  R('wafuu', 'わふうルーム', {
+    wall: T.wa_wall, floor: T.wa_floor, board: ['#8a5a32', '#6a4020', '#4a2a10'],
+    items: [
+      { id: 'shoji', x: 53, y: 44 },
+      { id: 'chochin', x: 12, y: 30 },
+      { id: 'chochin', x: 104, y: 30 },
+      { id: 'kotatsu', x: 98, y: 86 },
+      { id: 'mikan', x: 106, y: 76 },
+    ],
+  });
+
+  // Draw a room background (furniture that is "floor:true" is drawn first).
+  TM.drawRoom = function (room, sky) {
+    const G = TM.gfx;
+    const fy = TM.FLOOR_Y;
+    G.tile(room.wall, 0, 0, TM.W, fy - 3);
+    G.rect(0, fy - 3, TM.W, 1, room.board[0]);
+    G.rect(0, fy - 2, TM.W, 1, room.board[1]);
+    G.rect(0, fy - 1, TM.W, 1, room.board[2]);
+    G.tile(room.floor, 0, fy, TM.W, TM.H - fy);
+    const items = room.items.slice().sort((a, b) => (b.floor ? 1 : 0) - (a.floor ? 1 : 0));
+    for (const it of items) {
+      const f = TM.get('furniture', it.id);
+      if (f) G.spr(f.spr, it.x, it.y - f.spr.h, { gp: sky });
+    }
+  };
+})();
+
+</script>
+<script>
+/*
+ * OUTING PLACES (おでかけ先) and named CHARACTERS you can meet there.
+ *
+ * TM.register('place', { id, name, ground, draw(G, t) })
+ * TM.register('character', { id, name, gender, genes:{color,eyes,head,body,back}, line })
+ */
+(function () {
+  const S = (rows, o) => TM.spr(rows, o || {});
+  const P = (TM.PLACE_SPR = {});
+
+  P.cloud = S([
+    '....wwww.......',
+    '..wwwwwwww.ww..',
+    '.wwwwwwwwwwwwww',
+    'wwwwwwwwwwwwwww',
+    '.2222222222222.',
+  ]);
+  P.tree = S([
+    '.....GGGGGG.....',
+    '...GGggggggGG...',
+    '..GggghgggggGG..',
+    '.GgghhgggggrgG..',
+    '.GgggggggggggGG.',
+    'GggggggggghggggG',
+    'GgrggggggggggggG',
+    'GggggggggggrgggG',
+    '.GgggghggggggGG.',
+    '..GGgggggggGGG..',
+    '....GGGnnGGG....',
+    '.......nn.......',
+    '.......nN.......',
+    '.......nN.......',
+    '......nnNN......',
+  ]);
+  P.bench = S([
+    'kkkkkkkkkkkkkkkkkkkk',
+    'k888888888888888888k',
+    'kkkkkkkkkkkkkkkkkkkk',
+    'k888888888888888888k',
+    'kkkkkkkkkkkkkkkkkkkk',
+    '.kMk............kMk.',
+    '.kMk............kMk.',
+  ]);
+  P.flower = [
+    S(['.P.', 'PyP', '.P.', '.g.', 'gg.']),
+    S(['.w.', 'wyw', '.w.', '.g.', '.gg']),
+    S(['.u.', 'uyu', '.u.', '.g.', 'gg.']),
+    S(['.y.', 'yty', '.y.', '.g.', '.gg']),
+  ];
+  P.fountain = S([
+    '.......jj.......',
+    '......j..j......',
+    '.....j.jj.j.....',
+    '....j..kk..j....',
+    '.......kk.......',
+    '....kkkkkkkk....',
+    '...kjjjjjjjjk...',
+    '....kkkkkkkk....',
+    '.......kk.......',
+    '.kkkkkkkkkkkkkk.',
+    'kjjjjjjjjjjjjjjk',
+    'kjjwjjjjjjjjwjjk',
+    'kmmmmmmmmmmmmmmk',
+    'kllllllllllllllk',
+    'kkkkkkkkkkkkkkkk',
+  ]);
+  P.parasol = S([
+    '.......kk.......',
+    '....kkkrrkkk....',
+    '..kkrrwwrrwwkk..',
+    '.krrwwrrwwrrwwk.',
+    'kkkkkkkkkkkkkkkk',
+    '.......kk.......',
+    '.......kk.......',
+    '.......kk.......',
+    '.......kk.......',
+    '.......kk.......',
+    '.......kk.......',
+    '.......kk.......',
+  ]);
+  P.shell = S(['..x..', '.xPx.', 'xPxPx', 'xxxxx']);
+  P.counter = S([
+    'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
+    'k77777777777777777777777777777777777777k',
+    'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
+    'k88888888888888888888888888888888888888k',
+    'k88kkkkkkkk88kkkkkkkk88kkkkkkkk88kkkk88k',
+    'k88k999999k88k999999k88k999999k88k99k88k',
+    'k88k999999k88k999999k88k999999k88k99k88k',
+    'k88kkkkkkkk88kkkkkkkk88kkkkkkkk88kkkk88k',
+    'k88888888888888888888888888888888888888k',
+    'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
+  ]);
+  P.cafeWin = S([
+    'kkkkkkkkkkkkkkkkkkkk',
+    'k888888888888888888k',
+    'k8AAAAAAAAAAAAAAAA8k',
+    'k8AACCAAAAAAAAAAAA8k',
+    'k8ACCCCAAAAAAACCAA8k',
+    'k8AAAAAAAAAAAAAAAA8k',
+    'k8AAAAAAAAAAAAAAAA8k',
+    'k888888888888888888k',
+    'kkkkkkkkkkkkkkkkkkkk',
+  ]);
+  P.awning = S([
+    'rrrrwwwwrrrrwwwwrrrr',
+    'rrrrwwwwrrrrwwwwrrrr',
+    '.rr..ww..rr..ww..rr.',
+  ]);
+  P.cupcake = S(['..rr..', '.xxxx.', 'xxwxxx', 'kkkkkk', 'k7k7k7', '.k7k7.']);
+  P.chapel = S([
+    '..........y...........',
+    '.........yyy..........',
+    '..........y...........',
+    '.........kkk..........',
+    '........kwwwk.........',
+    '.......kwwwwwk........',
+    '......kwwwwwwwk.......',
+    '.....kwwwwwwwwwk......',
+    '....kkkkkkkkkkkkk.....',
+    '....kwwwwwwwwwwwk.....',
+    '....kwwwkkkkkwwwk.....',
+    '....kwwkxxxxxkwwk.....',
+    '....kwwkxxPxxkwwk.....',
+    '....kwwkxxxxxkwwk.....',
+    '....kwwkxxxxxkwwk.....',
+    '....kkkkkkkkkkkkk.....',
+  ]);
+
+  const G_ = () => TM.gfx;
+  const sky = (G, top, bottom) => {
+    G.rect(0, 0, TM.W, 30, top);
+    G.rect(0, 30, TM.W, 30, bottom);
+  };
+
+  TM.register('place', {
+    id: 'park', name: 'こうえん', ground: 110,
+    draw(G, t) {
+      sky(G, '#8fd3ff', '#bfe6ff');
+      G.spr(P.cloud, 8 + ((t / 400) % 150) - 20, 10);
+      G.spr(P.cloud, 80 - ((t / 600) % 150) + 40, 22);
+      G.rect(0, 60, TM.W, 68, '#9ce7a0');
+      G.rect(0, 60, TM.W, 2, '#7ed56f');
+      G.spr(P.tree, 2, 46);
+      G.spr(P.tree, 104, 44);
+      G.spr(P.fountain, 56, 50);
+      for (let i = 0; i < 10; i++) G.spr(P.flower[i % 4], 4 + i * 13, 118 + (i % 2) * 3);
+      G.spr(P.bench, 20, 92);
+    },
+  });
+
+  TM.register('place', {
+    id: 'cafe', name: 'カフェ', ground: 112,
+    draw(G, t) {
+      G.rect(0, 0, TM.W, 80, '#ffe8d0');
+      for (let x = 0; x < TM.W; x += 8) G.rect(x, 0, 4, 80, '#fff3e6');
+      G.spr(P.cafeWin, 54, 16, { gp: TM.SKY.day });
+      G.spr(P.awning, 54, 12);
+      G.rect(0, 80, TM.W, 48, '#b07a4a');
+      for (let y = 80; y < 128; y += 6) G.rect(0, y, TM.W, 1, '#8a5a32');
+      G.spr(P.counter, 4, 62);
+      G.spr(P.cupcake, 8, 56);
+      G.spr(P.cupcake, 22, 56);
+      G.spr(P.cupcake, 36, 56);
+    },
+  });
+
+  TM.register('place', {
+    id: 'beach', name: 'うみ', ground: 112,
+    draw(G, t) {
+      sky(G, '#6cc6ff', '#a8e0ff');
+      G.spr(P.cloud, 20, 8);
+      G.rect(0, 44, TM.W, 30, '#3a9ce8');
+      const w = Math.floor(t / 300) % 2;
+      for (let x = 0; x < TM.W; x += 12) G.rect(x + w * 6, 52 + ((x / 12) % 2) * 8, 5, 1, '#bfe6ff');
+      G.rect(0, 74, TM.W, 54, '#ffe8a8');
+      G.rect(0, 74, TM.W, 2, '#ffffff');
+      G.spr(P.parasol, 96, 72);
+      G.spr(P.shell, 20, 118);
+      G.spr(P.shell, 70, 122);
+    },
+  });
+
+  TM.register('place', {
+    id: 'garden', name: 'おはなばたけ', ground: 110,
+    draw(G, t) {
+      sky(G, '#ffd6ec', '#fff0f8');
+      G.spr(P.cloud, 60, 12);
+      G.rect(0, 56, TM.W, 72, '#b6e67a');
+      for (let y = 0; y < 5; y++)
+        for (let x = 0; x < 11; x++) G.spr(P.flower[(x + y) % 4], x * 12 + (y % 2) * 6, 58 + y * 14);
+    },
+  });
+
+  // backgrounds for special scenes
+  TM.drawChapel = function (G, t) {
+    G.rect(0, 0, TM.W, TM.H, '#fff0f8');
+    for (let x = 0; x < TM.W; x += 16) G.rect(x, 0, 8, 70, '#ffe3ef');
+    G.sprS(P.chapel, 42, 38, 2);
+    G.rect(0, 70, TM.W, 58, '#ffffff');
+    G.rect(52, 70, 24, 58, '#ff9ec2');
+    for (let i = 0; i < 8; i++) {
+      const px = (i * 37 + t / 20) % 128, py = (i * 23 + t / 15) % 128;
+      G.spr(TM.ITEM.heartS, px, py);
+    }
+  };
+  TM.drawRoad = function (G, t, dir) {
+    G.rect(0, 0, TM.W, 70, '#8fd3ff');
+    const o = Math.floor(t / 40) * (dir || 1);
+    G.spr(P.cloud, ((20 - o / 4) % 160 + 160) % 160 - 20, 10);
+    G.rect(0, 70, TM.W, 58, '#9ce7a0');
+    G.rect(0, 96, TM.W, 20, '#e8d0a8');
+    for (let i = 0; i < 4; i++) G.spr(P.tree, (((i * 44 - o) % 176) + 176) % 176 - 24, 57);
+    for (let i = 0; i < 8; i++) G.spr(P.flower[i % 4], (((i * 20 - o * 1.5) % 160) + 160) % 160 - 10, 120);
+  };
+
+  // ================= CHARACTERS =================
+  const CH = (id, name, gender, genes, line) => TM.register('character', { id, name, gender, genes, line });
+  CH('kururin', 'くるりんっち', 'f', { color: 'cream', eyes: 'kirakira', head: 'kurukuru', body: 'dress', back: 'none' }, 'ふわふわ〜♪');
+  CH('hatappi', 'はたっぴ', 'm', { color: 'orange', eyes: 'pacchiri', head: 'boushi', body: 'futsuu', back: 'buta' }, 'きょうもげんき！');
+  CH('usamimi', 'うさみみっち', 'f', { color: 'pink', eyes: 'tare', head: 'usagi', body: 'ribbon', back: 'usagi' }, 'ぴょんぴょん！');
+  CH('nekomaru', 'ねこまるっち', 'm', { color: 'gray', eyes: 'tsuri', head: 'neko', body: 'necktie', back: 'neko' }, 'にゃーん');
+  CH('tenshi', 'てんしっち', 'f', { color: 'snow', eyes: 'kirakira', head: 'tenshi', body: 'dress', back: 'tenshi' }, 'しあわせをどうぞ');
+  CH('akumacchi', 'あくまっち', 'm', { color: 'grape', eyes: 'tsuri', head: 'tsuno', body: 'futsuu', back: 'akuma' }, 'いたずらしちゃうぞ');
+  CH('sushicchi', 'すしっち', 'm', { color: 'leaf', eyes: 'tsubura', head: 'sushi', body: 'kimono', back: 'none' }, 'へいらっしゃい！');
+  CH('happacchi', 'はっぱっち', 'f', { color: 'mint', eyes: 'nikoniko', head: 'happa', body: 'overall', back: 'chou' }, 'おひさまだいすき');
+  CH('kumakko', 'くまっこ', 'm', { color: 'choco', eyes: 'manmaru', head: 'kuma', body: 'pocchari', back: 'none' }, 'はちみつたべたい');
+  CH('hakase', 'はかせっち', 'm', { color: 'sky', eyes: 'glasses', head: 'maru', body: 'robo', back: 'none' }, 'けんきゅうちゅう…');
+  CH('piyoko', 'ぴよこっち', 'f', { color: 'lemon', eyes: 'tsubura', head: 'hiyoko', body: 'muffler', back: 'tenshi' }, 'ぴよぴよ');
+  CH('dango', 'おだんごっち', 'f', { color: 'berry', eyes: 'heart', head: 'odango', body: 'kimono', back: 'mant' }, 'だんごがすき！');
+  CH('ryuu', 'りゅうっち', 'm', { color: 'navy', eyes: 'hoshi', head: 'tsuno', body: 'muffler', back: 'ryu' }, 'ガオー！');
+  CH('ribbon', 'りぼんっち', 'f', { color: 'lavender', eyes: 'pacchiri', head: 'ribbon', body: 'dress', back: 'kitsune' }, 'かわいいでしょ？');
+})();
+
+</script>
+<!-- game -->
+<script>
+/*
+ * Look composer: genes + stage + expression  ->  a 40x40 canvas.
+ *
+ * genes = { color, eyes, head, body, back }   (ids of registered parts)
+ * expr  = { eyes: 'open'|'closed'|'happy'|'sick'|'cry', mouth: 'smile'|'open'|'chew'|'frown'|'o'|'big'|'line' }
+ * frame = 0 | 1   (1 = squash: head sinks 1px, used for the idle bounce)
+ *
+ * Draw order: back → body → head → eyes → cheeks → mouth
+ */
+(function () {
+  'use strict';
+  const L = (TM.look = { W: 40, H: 40 });
+  const CX = 20;
+  const cache = new Map();
+
+  L.GENE_KEYS = ['color', 'eyes', 'head', 'body', 'back'];
+  L.GENE_NAMES = { color: 'いろ', eyes: 'め', head: 'あたま', body: 'からだ', back: 'せなか' };
+
+  function hash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+    return Math.abs(h);
+  }
+  L.hash = hash;
+
+  function eyeVariant(def, mode) {
+    const o = def.open;
+    const w = TM.util.clamp(o.w, 2, 6);
+    switch (mode) {
+      case 'closed': return def.closed || TM.EYE_CLOSED[w];
+      case 'happy': return def.happy || TM.EYE_HAPPY[w];
+      case 'sick': return TM.EYE_SICK;
+      case 'cry': return TM.EYE_CRY;
+      default: return o;
+    }
+  }
+
+  function drawFace(ctx, gp, eyesDef, fx, top, eyeY, mouthY, gap, mouthMode, eyeMode, beak) {
+    const open = eyesDef.open;
+    const ew = open.w, eh = open.h;
+    const lx = CX - gap / 2 - ew;
+    const rx = CX + gap / 2;
+    const ey = top + eyeY;
+    const v = eyeVariant(eyesDef, eyeMode);
+    let dx = Math.floor((ew - v.w) / 2), dy = 0;
+    if (v !== open) dy = eyeMode === 'closed' ? eh - v.h - 1 : Math.floor((eh - v.h) / 2);
+    if (eyeMode === 'cry' || eyeMode === 'sick') dy = Math.max(0, eh - v.h);
+    ctx.drawImage(TM.sprCanvas(v, gp, false), lx + dx, ey + dy);
+    ctx.drawImage(TM.sprCanvas(v, gp, true), rx + (ew - v.w - dx), ey + dy);
+    // cheeks
+    const cy = Math.min(ey + eh, top + mouthY);
+    const ch = TM.sprCanvas(TM.CHEEK, gp);
+    ctx.drawImage(ch, lx - 1, cy);
+    ctx.drawImage(ch, rx + ew - 2, cy);
+    // mouth / beak
+    let m;
+    if (beak) m = TM.BEAK[mouthMode] || TM.BEAK.smile;
+    else m = TM.MOUTH[mouthMode] || TM.MOUTH.smile;
+    ctx.drawImage(TM.sprCanvas(m, gp), CX - Math.floor(m.w / 2), top + mouthY);
+  }
+
+  L.canvas = function (genes, stage, expr, frame) {
+    expr = expr || {};
+    const eyeMode = expr.eyes || 'open';
+    const mouthMode = expr.mouth || 'smile';
+    frame = frame || 0;
+    const key = [genes.color, genes.eyes, genes.head, genes.body, genes.back, stage, eyeMode, mouthMode, frame].join('|');
+    let c = cache.get(key);
+    if (c) return c;
+
+    c = document.createElement('canvas');
+    c.width = L.W;
+    c.height = L.H;
+    const ctx = c.getContext('2d');
+    const gp = TM.get('color', genes.color) || TM.list('color')[0];
+    const eyes = TM.get('eyes', genes.eyes) || TM.list('eyes')[0];
+    const head = TM.get('head', genes.head) || TM.list('head')[0];
+    const body = TM.get('body', genes.body) || TM.list('body')[0];
+    const back = TM.get('back', genes.back) || TM.get('back', 'none');
+
+    if (stage === 'egg') {
+      const e = TM.STAGE.egg;
+      ctx.drawImage(TM.sprCanvas(e, gp), CX - e.w / 2, L.H - e.h);
+    } else if (stage === 'baby') {
+      const b = TM.STAGE.baby[hash(genes.color + genes.head) % TM.STAGE.baby.length];
+      const top = L.H - b.spr.h;
+      ctx.drawImage(TM.sprCanvas(b.spr, gp), CX - b.spr.w / 2, top);
+      drawFace(ctx, gp, TM.get('eyes', 'tsubura'), CX, top, b.eyeY, b.mouthY, b.gap, mouthMode, eyeMode, false);
+    } else if (stage === 'child') {
+      const s = TM.STAGE.child;
+      const top = L.H - s.spr.h;
+      const deco = TM.CHILD_DECO[head.childDeco || head.id];
+      if (deco) ctx.drawImage(TM.sprCanvas(deco.spr, gp), CX - deco.spr.w / 2, top + deco.dy);
+      ctx.drawImage(TM.sprCanvas(s.spr, gp), CX - s.spr.w / 2, top);
+      const gap = Math.max(2, s.gap + Math.max(0, eyes.gapAdd));
+      drawFace(ctx, gp, eyes, CX, top, s.eyeY, s.mouthY, gap, mouthMode, eyeMode, false);
+    } else {
+      // adult: composed from the 4 shape parts
+      const bs = body.spr, hs = head.spr;
+      const bx = CX - bs.w / 2, by = L.H - bs.h;
+      if (back && back.spr) {
+        const k = back.spr;
+        ctx.drawImage(TM.sprCanvas(k, gp), Math.round(CX - k.w / 2 + back.ox), by + back.oy);
+      }
+      ctx.drawImage(TM.sprCanvas(bs, gp), bx, by);
+      const hy = by + 2 - hs.h + (frame ? 1 : 0);
+      ctx.drawImage(TM.sprCanvas(hs, gp), CX - hs.w / 2, hy);
+      const gap = Math.max(2, head.gap + eyes.gapAdd);
+      drawFace(ctx, gp, eyes, CX, hy, head.eyeY, head.mouthY, gap, mouthMode, eyeMode, head.beak);
+    }
+    cache.set(key, c);
+    return c;
+  };
+
+  // draw a character (bottom-centre at cx, groundY) with optional flip
+  L.draw = function (genes, stage, cx, groundY, o) {
+    o = o || {};
+    const c = L.canvas(genes, stage, o.expr, o.frame);
+    TM.gfx.img(c, Math.round(cx - L.W / 2), Math.round(groundY - L.H), o.flip, o.alpha);
+  };
+
+  // tight bounding box (for tap hit tests / shadows) — measured once per canvas
+  L.bounds = function (genes, stage) {
+    const c = L.canvas(genes, stage, {}, 0);
+    if (c._b) return c._b;
+    const d = c.getContext('2d').getImageData(0, 0, L.W, L.H).data;
+    let x0 = L.W, y0 = L.H, x1 = 0, y1 = 0;
+    for (let y = 0; y < L.H; y++)
+      for (let x = 0; x < L.W; x++)
+        if (d[(y * L.W + x) * 4 + 3]) { if (x < x0) x0 = x; if (y < y0) y0 = y; if (x > x1) x1 = x; if (y > y1) y1 = y; }
+    c._b = { x0, y0, x1, y1, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+    return c._b;
+  };
+})();
+
+</script>
+<script>
+/*
+ * Genetics. 5 genes: color, eyes, head, body, back.
+ * Each gene of the child is taken from father OR mother (50/50),
+ * with a small chance of a mutation (random registered part).
+ */
+(function () {
+  'use strict';
+  const U = TM.util;
+  const GN = (TM.genetics = {});
+  GN.KEYS = TM.look.GENE_KEYS;
+  GN.MUTATION = 0.04;
+
+  GN.random = function () {
+    const g = {};
+    GN.KEYS.forEach((k) => (g[k] = U.pick(TM.ids(k))));
+    return g;
+  };
+
+  // returns { genes, src: { key: 'a' | 'b' | 'm' } }
+  GN.breed = function (a, b, mutation) {
+    const m = mutation == null ? GN.MUTATION : mutation;
+    const genes = {}, src = {};
+    GN.KEYS.forEach((k) => {
+      if (U.chance(m)) {
+        genes[k] = U.pick(TM.ids(k));
+        src[k] = 'm';
+      } else if (U.chance(0.5)) {
+        genes[k] = a[k]; src[k] = 'a';
+      } else {
+        genes[k] = b[k]; src[k] = 'b';
+      }
+    });
+    return { genes, src };
+  };
+
+  GN.partName = (k, id) => {
+    const d = TM.get(k, id);
+    return d ? d.name : id;
+  };
+  GN.describe = (g) => GN.KEYS.map((k) => TM.look.GENE_NAMES[k] + ':' + GN.partName(k, g[k])).join(' ');
+
+  // a random stranger to meet on an outing: sometimes a named character
+  GN.stranger = function (gender) {
+    if (U.chance(0.55)) {
+      const pool = TM.list('character').filter((c) => !gender || c.gender === gender);
+      if (pool.length) {
+        const c = U.pick(pool);
+        return { name: c.name, gender: c.gender, genes: Object.assign({}, c.genes), line: c.line, preset: c.id };
+      }
+    }
+    return { name: U.makeName(), gender: gender || U.pick(['m', 'f']), genes: GN.random(), line: U.pick(['はじめまして！', 'いいてんきだね', 'なかよくしてね♪', 'あそぼー！', 'こんにちは〜']) };
+  };
+})();
+
+</script>
+<script>
+/*
+ * Game state, simulation, saving and shared actions.
+ *
+ * All times are in "game seconds". Real seconds are multiplied by
+ * TM.game.s.timeScale (1 normally, bigger in debug mode).
+ */
+(function () {
+  'use strict';
+  const U = TM.util;
+  const GM = (TM.game = {});
+  const KEY = 'tm-meets-save-v1';
+
+  // ---- balance (game seconds) ----
+  GM.CFG = {
+    stageTime: { egg: 40, baby: 30 * 60, child: 12 * 3600 }, // how long each stage lasts
+    hungerEvery: { baby: 6 * 60, child: 15 * 60, adult: 22 * 60 },
+    happyEvery: { baby: 8 * 60, child: 18 * 60, adult: 26 * 60 },
+    poopEvery: [25 * 60, 50 * 60],
+    sickAfterPoop: 20 * 60, // poop left this long -> may get sick
+    sleepFrom: 21, sleepTo: 7, // real clock hours
+    marryAge: 0, // adults can marry right away (debug-friendly)
+  };
+
+  GM.newPet = function (genes, o) {
+    o = o || {};
+    return {
+      id: U.uid(),
+      name: o.name || U.makeName(),
+      gender: o.gender || U.pick(['m', 'f']),
+      genes: genes || TM.genetics.random(),
+      stage: o.stage || 'egg',
+      stageT: 0, // seconds spent in current stage
+      ageT: 0,
+      hunger: 3, happy: 3,
+      weight: 5,
+      poops: [],
+      sick: false,
+      sleeping: false,
+      hT: 0, jT: 0, pT: 20 * 60, // timers
+      gen: o.gen || 1,
+      parents: o.parents || null,
+      discipline: 0,
+      careMiss: 0,
+      friends: [],
+    };
+  };
+
+  GM.fresh = function () {
+    const pet = GM.newPet(null, { gen: 1 });
+    return {
+      v: 1,
+      pet,
+      family: [],     // past generations
+      seen: {},       // seen parts per gene: { head: { maru: 1 } }
+      met: [],        // characters met (names)
+      points: 100,
+      room: 'yumekawa',
+      lightsOff: false,
+      timeScale: 1,
+      debug: false,
+      last: Date.now(),
+      clockOffset: 0, // debug: shift clock hours
+    };
+  };
+
+  GM.load = function () {
+    let s = null;
+    try { s = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { s = null; }
+    GM.s = s && s.v === 1 ? s : GM.fresh();
+    GM.markSeen(GM.s.pet.genes);
+    // offline catch-up (capped at 8 hours of game time)
+    const dt = Math.min(8 * 3600, Math.max(0, (Date.now() - (GM.s.last || Date.now())) / 1000));
+    if (dt > 5) GM.simulate(dt, true);
+  };
+  GM.save = function () {
+    GM.s.last = Date.now();
+    try { localStorage.setItem(KEY, JSON.stringify(GM.s)); } catch (e) { /* private mode */ }
+  };
+  GM.reset = function () {
+    try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
+    GM.s = GM.fresh();
+    GM.markSeen(GM.s.pet.genes);
+  };
+
+  GM.markSeen = function (genes) {
+    const seen = GM.s.seen;
+    TM.genetics.KEYS.forEach((k) => {
+      seen[k] = seen[k] || {};
+      seen[k][genes[k]] = (seen[k][genes[k]] || 0) + 1;
+    });
+  };
+
+  // ---- clock ----
+  GM.now = () => new Date(Date.now() + (GM.s ? GM.s.clockOffset : 0) * 3600000);
+  GM.hour = () => GM.now().getHours() + GM.now().getMinutes() / 60;
+  GM.isNight = function () {
+    const h = GM.hour();
+    return h >= GM.CFG.sleepFrom || h < GM.CFG.sleepTo;
+  };
+  GM.skyKey = function () {
+    const h = GM.hour();
+    if (h >= 5 && h < 9) return 'morning';
+    if (h >= 9 && h < 16.5) return 'day';
+    if (h >= 16.5 && h < 19) return 'evening';
+    return 'night';
+  };
+
+  // ---- simulation ----
+  GM.simulate = function (dt, offline) {
+    const p = GM.s.pet;
+    const C = GM.CFG;
+    p.ageT += dt;
+    // stage progress
+    if (C.stageTime[p.stage] != null) {
+      p.stageT += dt;
+      if (p.stage !== 'egg' && p.stageT >= C.stageTime[p.stage]) GM.grow(offline);
+      else if (p.stage === 'egg' && p.stageT >= C.stageTime.egg && offline) GM.grow(true);
+    } else p.stageT += dt;
+    if (p.stage === 'egg') return;
+
+    // sleep follows the real clock (children & adults), babies nap never
+    const night = GM.isNight() && p.stage !== 'baby';
+    if (night && !p.sleeping) { p.sleeping = true; GM.emit('sleep'); }
+    if (!night && p.sleeping) { p.sleeping = false; GM.s.lightsOff = false; GM.emit('wake'); }
+    if (p.sleeping) return;
+
+    const st = p.stage === 'baby' ? 'baby' : p.stage === 'child' ? 'child' : 'adult';
+    const mul = p.sick ? 1.5 : 1;
+    p.hT += dt * mul;
+    p.jT += dt * mul;
+    while (p.hT >= C.hungerEvery[st]) { p.hT -= C.hungerEvery[st]; p.hunger = Math.max(0, p.hunger - 1); }
+    while (p.jT >= C.happyEvery[st]) { p.jT -= C.happyEvery[st]; p.happy = Math.max(0, p.happy - 1); }
+    p.pT -= dt;
+    if (p.pT <= 0) {
+      p.pT = C.poopEvery[0] + Math.random() * (C.poopEvery[1] - C.poopEvery[0]);
+      if (p.poops.length < 4) {
+        p.poops.push({ x: 10 + U.rand(100), t: 0 });
+        GM.emit('poop');
+      }
+    }
+    for (const pp of p.poops) {
+      pp.t += dt;
+      if (!p.sick && pp.t > C.sickAfterPoop && U.chance(dt / 600)) { p.sick = true; GM.emit('sick'); }
+    }
+    if (!p.sick && p.hunger === 0 && U.chance(dt / 3600)) { p.sick = true; GM.emit('sick'); }
+  };
+
+  GM.nextStage = { egg: 'baby', baby: 'child', child: 'adult' };
+  GM.grow = function (silent) {
+    const p = GM.s.pet;
+    const n = GM.nextStage[p.stage];
+    if (!n) return false;
+    p.stage = n;
+    p.stageT = 0;
+    if (n === 'baby') { p.hunger = 2; p.happy = 2; p.weight = 5; }
+    if (n === 'adult') GM.markSeen(p.genes);
+    if (!silent) GM.emit('grow', n);
+    return true;
+  };
+
+  // ---- events (scenes listen) ----
+  const listeners = [];
+  GM.on = (fn) => listeners.push(fn);
+  GM.emit = (ev, arg) => listeners.forEach((fn) => fn(ev, arg));
+
+  // ---- actions ----
+  GM.feed = function (food) {
+    const p = GM.s.pet;
+    p.hunger = Math.min(4, p.hunger + food.hunger);
+    p.happy = Math.min(4, p.happy + food.happy);
+    p.weight = Math.min(99, p.weight + food.weight);
+    if (food.kind === 'meal') p.pT = Math.min(p.pT, 8 * 60 + Math.random() * 600);
+  };
+  GM.clean = function () { GM.s.pet.poops = []; };
+  GM.bath = function () {
+    const p = GM.s.pet;
+    p.happy = Math.min(4, p.happy + 1);
+  };
+  GM.cure = function () { GM.s.pet.sick = false; };
+  GM.play = function (win) {
+    const p = GM.s.pet;
+    p.happy = Math.min(4, p.happy + (win ? 1 : 0));
+    p.weight = Math.max(1, p.weight - 1);
+    if (win) GM.s.points += 20;
+  };
+  GM.pat = function () {
+    const p = GM.s.pet;
+    p.jT = Math.max(0, p.jT - 120);
+    if (U.chance(0.25)) p.happy = Math.min(4, p.happy + 1);
+  };
+
+  // Marriage: returns the new generation's pet and pushes the family record.
+  GM.marry = function (partner, breed) {
+    const s = GM.s, p = s.pet;
+    const res = breed || TM.genetics.breed(p.genes, partner.genes);
+    s.family.push({
+      gen: p.gen, name: p.name, gender: p.gender, genes: p.genes,
+      partner: { name: partner.name, gender: partner.gender, genes: partner.genes },
+      child: res.genes, src: res.src,
+    });
+    const child = GM.newPet(res.genes, { gen: p.gen + 1, parents: [p.name, partner.name] });
+    child.inherit = res.src;
+    s.pet = child;
+    GM.markSeen(res.genes);
+    GM.save();
+    return child;
+  };
+})();
+
+</script>
+<script>
+/*
+ * Scene manager, particles, pet actor, sound, input.
+ *
+ * A scene is   TM.scenes.name = { enter(args), update(dt), draw(G, t), btn(b), tap(x, y) }
+ *   b is 'A' (next / left), 'B' (decide), 'C' (back)
+ */
+(function () {
+  'use strict';
+  const U = TM.util;
+
+  // ---------------- scenes ----------------
+  const SC = (TM.sc = { cur: null, name: '', t: 0 });
+  SC.go = function (name, args) {
+    const s = TM.scenes[name];
+    if (!s) { console.warn('no scene', name); return; }
+    SC.cur = s;
+    SC.name = name;
+    SC.t = 0;
+    if (s.enter) s.enter(args || {});
+  };
+
+  // ---------------- particles ----------------
+  const FX = (TM.fx = { list: [] });
+  FX.add = function (o) {
+    FX.list.push(Object.assign({ x: 64, y: 64, vx: 0, vy: 0, g: 0, life: 1, t: 0 }, o));
+  };
+  FX.hearts = function (x, y, n) {
+    for (let i = 0; i < (n || 3); i++)
+      FX.add({ spr: i % 2 ? TM.ITEM.heartS : TM.ITEM.heart, x: x - 6 + U.rand(12), y: y - U.rand(6), vx: (Math.random() - 0.5) * 12, vy: -18 - U.rand(10), life: 1.2 + Math.random() * 0.5 });
+  };
+  FX.sparkle = function (x, y, n) {
+    for (let i = 0; i < (n || 5); i++)
+      FX.add({ anim: TM.ITEM.sparkle, x: x - 14 + U.rand(28), y: y - U.rand(28), life: 0.6 + Math.random() * 0.6, blink: true });
+  };
+  FX.update = function (dt) {
+    for (const f of FX.list) {
+      f.t += dt;
+      f.vy += f.g * dt;
+      f.x += f.vx * dt;
+      f.y += f.vy * dt;
+    }
+    FX.list = FX.list.filter((f) => f.t < f.life);
+  };
+  FX.draw = function (G) {
+    for (const f of FX.list) {
+      let s = f.spr;
+      if (f.anim) s = f.anim[Math.floor((f.t / f.life) * f.anim.length) % f.anim.length];
+      if (f.blink && Math.floor(f.t * 10) % 3 === 0) continue;
+      G.spr(s, Math.round(f.x - s.w / 2), Math.round(f.y - s.h / 2), { gp: f.gp });
+    }
+  };
+  FX.clear = () => (FX.list = []);
+
+  // ---------------- pet actor ----------------
+  // Handles blinking, bounce frames and wandering; scenes may override expr.
+  const A = (TM.actor = {
+    x: 64, dir: 1, target: 64, mode: 'idle', modeT: 0, blinkT: 2, blink: 0, frameT: 0, frame: 0, hop: 0,
+    expr: null, exprT: 0,
+  });
+  A.reset = function (x) {
+    A.x = x != null ? x : 64; A.target = A.x; A.mode = 'idle'; A.modeT = 1; A.expr = null; A.exprT = 0;
+  };
+  A.say = function (expr, secs) { A.expr = expr; A.exprT = secs || 1.5; };
+  A.update = function (dt, wander, minX, maxX) {
+    A.frameT += dt;
+    if (A.frameT > 0.5) { A.frameT = 0; A.frame ^= 1; }
+    A.blinkT -= dt;
+    if (A.blinkT <= 0) { A.blink = 0.15; A.blinkT = 2 + Math.random() * 3; }
+    if (A.blink > 0) A.blink -= dt;
+    if (A.exprT > 0) { A.exprT -= dt; if (A.exprT <= 0) A.expr = null; }
+    if (!wander) return;
+    A.modeT -= dt;
+    if (A.modeT <= 0) {
+      const r = Math.random();
+      if (r < 0.5) { A.mode = 'walk'; A.target = U.clamp(A.x + (Math.random() - 0.5) * 70, minX || 20, maxX || 108); A.modeT = 4; }
+      else if (r < 0.7) { A.mode = 'hop'; A.modeT = 1.2; }
+      else if (r < 0.8) { A.mode = 'look'; A.modeT = 1.5; }
+      else { A.mode = 'idle'; A.modeT = 1.5 + Math.random() * 2; }
+    }
+    if (A.mode === 'walk') {
+      const d = A.target - A.x;
+      if (Math.abs(d) < 1) { A.mode = 'idle'; A.modeT = 1 + Math.random() * 2; }
+      else { A.dir = d > 0 ? 1 : -1; A.x += A.dir * Math.min(Math.abs(d), 12 * dt); }
+    }
+    if (A.mode === 'look' && A.frameT === 0) A.dir = -A.dir;
+  };
+  A.hopY = function () {
+    if (A.mode === 'hop') return -Math.abs(Math.round(Math.sin(A.modeT * 10) * 4));
+    if (A.mode === 'walk') return A.frame ? -1 : 0;
+    return 0;
+  };
+  // expression taking blinking into account
+  A.face = function (base) {
+    const e = Object.assign({ eyes: 'open', mouth: 'smile' }, base || {}, A.expr || {});
+    if (A.blink > 0 && e.eyes === 'open') e.eyes = 'closed';
+    return e;
+  };
+  // draw the current pet (or any {genes,stage}) at x / ground
+  TM.drawPet = function (pet, x, ground, o) {
+    o = o || {};
+    const stage = pet.stage;
+    let y = ground;
+    let frame = 0;
+    if (stage === 'adult') frame = o.frame != null ? o.frame : 0;
+    else if (o.frame) y -= 1; // small hop for non-adults
+    TM.look.draw(pet.genes, stage, x, y + (o.dy || 0), { expr: o.expr, frame, flip: o.flip, alpha: o.alpha });
+  };
+  TM.drawShadow = function (x, ground, w) {
+    w = w || 16;
+    TM.gfx.alpha(0.18);
+    TM.gfx.rect(Math.round(x - w / 2 + 1), ground - 1, w - 2, 2, '#2b1d3a');
+    TM.gfx.rect(Math.round(x - w / 2), ground, w, 1, '#2b1d3a');
+    TM.gfx.alpha(1);
+  };
+
+  // ---------------- sound (tiny beeps) ----------------
+  let ac = null;
+  TM.muted = false;
+  const tones = {
+    beep: [[1760, 0.05]],
+    ok: [[1320, 0.05], [1760, 0.07]],
+    cancel: [[880, 0.06], [660, 0.08]],
+    eat: [[520, 0.04], [0, 0.03], [620, 0.04]],
+    happy: [[1047, 0.08], [1319, 0.08], [1568, 0.12]],
+    sad: [[660, 0.15], [523, 0.25]],
+    call: [[1760, 0.08], [0, 0.05], [1760, 0.08], [0, 0.05], [1760, 0.08]],
+    fanfare: [[784, 0.1], [988, 0.1], [1175, 0.1], [1568, 0.3]],
+    flush: [[300, 0.05], [260, 0.05], [220, 0.05], [200, 0.05], [180, 0.1]],
+    hatch: [[523, 0.08], [659, 0.08], [784, 0.08], [1047, 0.2]],
+    wed: [[784, 0.2], [784, 0.1], [1047, 0.3], [988, 0.15], [880, 0.15], [1047, 0.4]],
+  };
+  TM.sfx = function (name) {
+    if (TM.muted) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      if (ac.state === 'suspended') ac.resume();
+      let t = ac.currentTime;
+      for (const [f, d] of tones[name] || tones.beep) {
+        if (f) {
+          const o = ac.createOscillator(), g = ac.createGain();
+          o.type = 'square';
+          o.frequency.value = f;
+          g.gain.setValueAtTime(0.05, t);
+          g.gain.exponentialRampToValueAtTime(0.001, t + d);
+          o.connect(g).connect(ac.destination);
+          o.start(t);
+          o.stop(t + d);
+        }
+        t += d;
+      }
+    } catch (e) { /* no audio */ }
+  };
+
+  // ---------------- list menu helper ----------------
+  // A reusable vertical list (used by food / toy / room / outing selection)
+  TM.ListMenu = function (items, o) {
+    o = o || {};
+    return {
+      items, i: 0, top: 0, rows: o.rows || 4,
+      get cur() { return this.items[this.i]; },
+      next() { this.i = (this.i + 1) % this.items.length; this.fix(); TM.sfx('beep'); },
+      prev() { this.i = (this.i - 1 + this.items.length) % this.items.length; this.fix(); TM.sfx('beep'); },
+      fix() { if (this.i < this.top) this.top = this.i; if (this.i >= this.top + this.rows) this.top = this.i - this.rows + 1; },
+      draw(G, x, y, w, rowH, label) {
+        for (let r = 0; r < this.rows; r++) {
+          const idx = this.top + r;
+          if (idx >= this.items.length) break;
+          const it = this.items[idx];
+          const sel = idx === this.i;
+          if (sel) G.box(x, y + r * rowH, w, rowH - 1, { bg: '#ffe3ef', border: '#ff6fa3', shadow: '#ffc4d8' });
+          label(it, x, y + r * rowH, sel);
+        }
+        if (this.top > 0) G.spr(TM.ARROW_UP, x + w - 8, y - 5);
+        if (this.top + this.rows < this.items.length) G.spr(TM.ARROW_DN, x + w - 8, y + this.rows * rowH);
+      },
+      // returns index hit by a tap, or -1
+      hit(x, y, bx, by, w, rowH) {
+        if (x < bx || x > bx + w) return -1;
+        const r = Math.floor((y - by) / rowH);
+        if (r < 0 || r >= this.rows) return -1;
+        const idx = this.top + r;
+        return idx < this.items.length ? idx : -1;
+      },
+    };
+  };
+  TM.ARROW_UP = TM.spr(['..k..', '.kkk.', 'kkkkk']);
+  TM.ARROW_DN = TM.spr(['kkkkk', '.kkk.', '..k..']);
+  TM.ARROW_L = TM.spr(['..k', '.kk', 'kkk', '.kk', '..k']);
+  TM.ARROW_R = TM.spr(['k..', 'kk.', 'kkk', 'kk.', 'k..']);
+})();
+
+</script>
+<script>
+/*
+ * HOME — the living room with the pet wandering, poops, status marks and
+ * the icon menu (A: next, B: open, C: close / tap icons directly).
+ */
+(function () {
+  'use strict';
+  const U = TM.util;
+  const GM = TM.game;
+  const A = TM.actor;
+  const GROUND = 108;
+
+  TM.STAGE_NAME = { egg: 'たまご', baby: 'ベビー', child: 'こども', adult: 'おとな' };
+
+  // background shared by many scenes
+  TM.drawHomeBG = function (G) {
+    const room = TM.get('room', GM.s.room) || TM.list('room')[0];
+    TM.drawRoom(room, TM.SKY[GM.skyKey()]);
+  };
+  TM.drawDark = function (G, a) {
+    G.alpha(a == null ? 0.72 : a);
+    G.rect(0, 0, TM.W, TM.H, '#10152e');
+    G.alpha(1);
+  };
+  // top chips: clock + gotchi points
+  TM.drawTopBar = function (G) {
+    const d = GM.now();
+    const hh = String(d.getHours()).padStart(2, '0'), mm = String(d.getMinutes()).padStart(2, '0');
+    const str = hh + ':' + mm;
+    G.rect(1, 1, G.numW(str) + 4, 9, '#ffffff');
+    G.rect(1, 1, G.numW(str) + 4, 1, '#ffb0cf');
+    G.num(str, 3, 3, '#6b4a8a');
+    const pts = GM.s.points + 'P';
+    const pw = G.numW(pts) + 4;
+    G.rect(TM.W - pw - 1, 1, pw, 9, '#ffffff');
+    G.rect(TM.W - pw - 1, 1, pw, 1, '#ffd84a');
+    G.num(pts, TM.W - pw + 1, 3, '#c8641e');
+  };
+
+  const icons = () => TM.list('icon');
+  const COLS = 6, CW = 20, PY = 88;
+
+  const H = (TM.scenes.home = {
+    menu: false, sel: 0, msgT: 0, msg: '', callT: 0,
+    enter(a) {
+      this.menu = !!a.menu;
+      if (a.sel != null) this.sel = a.sel;
+      if (a.msg) { this.msg = a.msg; this.msgT = 2.5; }
+      if (!a.keepActor) A.reset(A.x || 64);
+    },
+    update(dt) {
+      const p = GM.s.pet;
+      if (p.stage === 'egg') {
+        if (p.stageT >= GM.CFG.stageTime.egg) return TM.sc.go('hatch');
+      }
+      const wander = p.stage !== 'egg' && !p.sleeping && !this.menu;
+      A.update(dt, wander, 18, 110);
+      if (this.msgT > 0) this.msgT -= dt;
+      // call sound when something is needed
+      this.callT -= dt;
+      if (this.callT <= 0) {
+        this.callT = 30;
+        if (!p.sleeping && p.stage !== 'egg' && (p.hunger === 0 || p.happy === 0 || p.sick)) TM.sfx('call');
+      }
+    },
+    draw(G, t) {
+      const p = GM.s.pet;
+      TM.drawHomeBG(G);
+      // poops
+      for (const pp of p.poops) {
+        const ps = TM.ITEM.poop[0];
+        G.spr(ps, pp.x, GROUND - ps.h + 4);
+        G.spr(TM.ITEM.stink[Math.floor(t / 400) % 2], pp.x + 2, GROUND - ps.h - 2);
+      }
+      if (p.stage === 'egg') {
+        const wob = Math.floor(t / 250) % 4;
+        const dx = wob === 1 ? -1 : wob === 3 ? 1 : 0;
+        TM.drawShadow(64, GROUND, 18);
+        TM.drawPet(p, 64 + dx, GROUND);
+      } else if (p.sleeping) {
+        // headboard → pillow → pet → quilt (covers the body)
+        const I = TM.ITEM;
+        const qy = GROUND - I.quilt.h + 2;
+        G.spr(I.headboard, 64 - I.headboard.w / 2, qy + 3 - I.headboard.h);
+        G.spr(I.pillow, 64 - I.pillow.w / 2, qy - 2);
+        const ph = TM.look.bounds(p.genes, p.stage).h;
+        TM.look.draw(p.genes, p.stage, 64, qy + Math.min(9, Math.round(ph * 0.3)), { expr: { eyes: 'closed', mouth: 'line' } });
+        G.spr(I.quilt, 64 - I.quilt.w / 2, qy);
+        const zf = Math.floor(t / 700) % 2;
+        G.spr(I.zzz[zf], 78 + zf * 3, qy - ph + 4 - (Math.floor(t / 350) % 2));
+      } else {
+        let expr = { eyes: 'open', mouth: 'smile' };
+        if (p.sick) expr = { eyes: 'sick', mouth: 'line' };
+        else if (p.hunger === 0 || p.happy === 0) expr = { eyes: 'open', mouth: 'frown' };
+        else if (p.happy >= 4) expr = { eyes: 'open', mouth: A.frame ? 'open' : 'smile' };
+        const face = A.face(expr);
+        TM.drawShadow(A.x, GROUND, 18);
+        TM.drawPet(p, A.x, GROUND, { expr: face, frame: A.frame, flip: A.dir < 0, dy: A.hopY() });
+        const top = GROUND - TM.look.bounds(p.genes, p.stage).h;
+        if (p.sick) {
+          G.spr(TM.ITEM.skull, A.x + 10, top - 4 + (A.frame ? 1 : 0));
+          G.spr(TM.ITEM.sweat, A.x - 12, top + 4);
+        } else if (p.hunger === 0 && Math.floor(t / 2500) % 2 === 0) {
+          G.spr(TM.ITEM.thought, A.x + 6, top - 14);
+          G.spr(TM.get('food', 'onigiri').spr, A.x + 4, top - 14, {});
+        } else if (p.happy === 0 && Math.floor(t / 2500) % 2 === 1) {
+          G.spr(TM.ITEM.anger, A.x + 10, top);
+        }
+      }
+      TM.fx.draw(G);
+      if (GM.s.lightsOff) TM.drawDark(G, p.sleeping ? 0.7 : 0.55);
+      TM.drawTopBar(G);
+      // attention mark
+      if (p.stage !== 'egg' && !p.sleeping && (p.hunger === 0 || p.happy === 0 || p.sick || p.poops.length >= 2) && Math.floor(t / 500) % 2)
+        G.spr(TM.ITEM.exclaim, 62, 2);
+      if (this.msgT > 0) G.msg(this.msg);
+      if (this.menu) this.drawMenu(G, t);
+    },
+    drawMenu(G, t) {
+      const list = icons();
+      G.alpha(0.92);
+      G.box(0, PY - 2, TM.W, TM.H - PY + 2, { bg: '#fff6fb', border: '#ff6fa3', shadow: '#ffd0e0' });
+      G.alpha(1);
+      list.forEach((ic, i) => {
+        const cx = 4 + (i % COLS) * CW, cy = PY + 3 + Math.floor(i / COLS) * 19;
+        if (i === this.sel) {
+          G.box(cx - 1, cy - 2, 18, 16, { bg: '#ffe38a', border: '#ff9a3c', shadow: '#ffd84a' });
+        }
+        G.spr(ic.spr, cx + 2, cy + (i === this.sel && Math.floor(t / 300) % 2 ? -1 : 0));
+      });
+      const name = list[this.sel].name;
+      const w = G.textW(name) + 10;
+      G.box(64 - w / 2, PY - 15, w, 13, { bg: '#ffffff', border: '#ff6fa3' });
+      G.text(name, 64, PY - 12, { color: '#b8283a', align: 'center' });
+    },
+    open(i) {
+      const ic = icons()[i];
+      const p = GM.s.pet;
+      this.menu = false;
+      if (p.stage === 'egg' && !['status', 'room', 'family', 'zukan'].includes(ic.scene)) {
+        TM.sfx('cancel');
+        this.msg = 'まだ たまごだよ'; this.msgT = 2;
+        return;
+      }
+      if (p.sleeping && ['food', 'bath', 'game', 'toy', 'outing', 'toilet'].includes(ic.scene)) {
+        TM.sfx('cancel');
+        this.msg = 'すやすや ねてるよ…'; this.msgT = 2;
+        return;
+      }
+      TM.sfx('ok');
+      if (ic.scene === 'light') {
+        GM.s.lightsOff = !GM.s.lightsOff;
+        this.msg = GM.s.lightsOff ? 'でんきを けしたよ' : 'でんきを つけたよ';
+        this.msgT = 1.5;
+        return;
+      }
+      TM.sc.go(ic.scene, { from: 'home' });
+    },
+    btn(b) {
+      const n = icons().length;
+      if (!this.menu) {
+        if (b === 'C') { TM.sfx('beep'); this.msg = TM.game.s.pet.name + ' / ' + TM.STAGE_NAME[TM.game.s.pet.stage]; this.msgT = 1.5; return; }
+        this.menu = true; TM.sfx('beep'); return;
+      }
+      if (b === 'A') { this.sel = (this.sel + 1) % n; TM.sfx('beep'); }
+      else if (b === 'B') this.open(this.sel);
+      else if (b === 'C') { this.menu = false; TM.sfx('cancel'); }
+    },
+    tap(x, y) {
+      const p = GM.s.pet;
+      if (this.menu) {
+        if (y >= PY) {
+          const col = Math.floor((x - 3) / CW), row = Math.floor((y - PY - 1) / 19);
+          const i = row * COLS + col;
+          if (col >= 0 && col < COLS && i >= 0 && i < icons().length) {
+            if (i === this.sel) this.open(i);
+            else { this.sel = i; TM.sfx('beep'); }
+          }
+        } else { this.menu = false; TM.sfx('cancel'); }
+        return;
+      }
+      // pat the pet
+      if (p.stage !== 'egg' && !p.sleeping) {
+        const b = TM.look.bounds(p.genes, p.stage);
+        if (Math.abs(x - A.x) <= b.w / 2 + 3 && y >= GROUND - b.h - 3 && y <= GROUND + 2) {
+          GM.pat();
+          A.say({ eyes: 'happy', mouth: 'open' }, 1.2);
+          A.mode = 'hop'; A.modeT = 0.6;
+          TM.fx.hearts(A.x, GROUND - b.h, 2);
+          TM.sfx('happy');
+          return;
+        }
+      }
+      this.menu = true;
+      TM.sfx('beep');
+    },
+  });
+})();
+
+</script>
+<script>
+/*
+ * CARE scenes: status, food → eat, toilet, bath, medicine, toy, game.
+ */
+(function () {
+  'use strict';
+  const U = TM.util;
+  const GM = TM.game;
+  const A = TM.actor;
+  const GROUND = 108;
+  const back = (msg) => TM.sc.go('home', { msg, keepActor: true });
+
+  const HEART_F = TM.spr(['.rr.rr.', 'rwrrrrr', 'rrrrrrr', '.rrrrr.', '..rrr..', '...r...']);
+  const HEART_E = TM.spr(['.kk.kk.', 'k..k..k', 'k.....k', '.k...k.', '..k.k..', '...k...']);
+  const GENDER = {
+    m: TM.spr(['..kkk', '...kk', '.kk.k', 'k..k.', 'k..k.', '.kk..'], { pal: { k: '#2f6fc0' } }),
+    f: TM.spr(['.kk.', 'k..k', 'k..k', '.kk.', '.k..', 'kkk.', '.k..'], { pal: { k: '#ff4d8a' } }),
+  };
+  TM.GENDER_SPR = GENDER;
+
+  function title(G, str, color) {
+    const w = G.textW(str) + 12;
+    G.box(64 - w / 2, 3, w, 14, { bg: color || '#ffe3ef', border: '#ff6fa3' });
+    G.text(str, 64, 6, { color: '#8e2f5c', align: 'center' });
+  }
+  TM.drawTitle = title;
+  function hearts(G, x, y, n) {
+    for (let i = 0; i < 4; i++) G.spr(i < n ? HEART_F : HEART_E, x + i * 9, y);
+  }
+
+  // =============== STATUS ===============
+  TM.scenes.status = {
+    enter() { this.page = 0; },
+    pages: 4,
+    draw(G, t) {
+      const p = GM.s.pet;
+      G.clear('#fff6fb');
+      for (let y = 0; y < TM.H; y += 8) G.rect(0, y, TM.W, 1, '#ffeaf4');
+      const pageDots = () => { for (let i = 0; i < this.pages; i++) G.rect(52 + i * 7, 122, 4, 3, i === this.page ? '#ff6fa3' : '#ffd0e0'); };
+      if (this.page === 0) {
+        title(G, 'プロフィール');
+        TM.drawPet(p, 30, 76, { expr: A.face({ eyes: 'open', mouth: 'smile' }), frame: Math.floor(t / 500) % 2 });
+        G.text(p.name, 54, 28, { color: '#4a2f60' });
+        if (p.stage !== 'egg') G.spr(GENDER[p.gender], 54 + G.textW(p.name) + 3, 29);
+        G.text(TM.STAGE_NAME[p.stage], 54, 42, { color: '#6b4a8a' });
+        G.text('だい' + p.gen + 'せだい', 54, 54, { color: '#6b4a8a' });
+        G.text('ねんれい', 8, 86, { color: '#6b4a8a' });
+        G.num(Math.floor(p.ageT / 86400) + '', 60, 88, '#4a2f60');
+        G.text('さい', 72, 86, { color: '#6b4a8a' });
+        G.text('たいじゅう', 8, 100, { color: '#6b4a8a' });
+        G.num(p.weight + 'g', 60, 102, '#4a2f60');
+      } else if (this.page === 1) {
+        title(G, 'きもち');
+        G.text('おなか', 12, 30, { color: '#6b4a8a' });
+        hearts(G, 60, 31, p.hunger);
+        G.text('ごきげん', 12, 50, { color: '#6b4a8a' });
+        hearts(G, 60, 51, p.happy);
+        G.text('からだ', 12, 70, { color: '#6b4a8a' });
+        G.text(p.sick ? 'びょうき…' : 'げんき！', 60, 70, { color: p.sick ? '#b8283a' : '#3f9a4a' });
+        G.text('うんち', 12, 90, { color: '#6b4a8a' });
+        G.num(p.poops.length + '', 62, 92, '#4a2f60');
+      } else if (this.page === 2) {
+        title(G, 'いでんし');
+        const src = p.inherit || {};
+        const mark = { a: 'ちち', b: 'はは', m: 'へんい' };
+        TM.genetics.KEYS.forEach((k, i) => {
+          const y = 24 + i * 18;
+          G.box(4, y - 2, 120, 16, { bg: '#ffffff', border: '#ffc4d8' });
+          G.text(TM.look.GENE_NAMES[k], 8, y + 2, { color: '#ff6fa3' });
+          G.text(TM.genetics.partName(k, p.genes[k]), 40, y + 2, { color: '#4a2f60' });
+          if (src[k]) G.text(mark[src[k]], 122, y + 2, { color: src[k] === 'm' ? '#6c48b0' : '#8a8aa2', align: 'right' });
+        });
+      } else {
+        title(G, 'かぞく');
+        G.text(p.parents ? 'パパとママ' : 'はじめての たまごっち', 64, 26, { color: '#6b4a8a', align: 'center' });
+        const last = GM.s.family[GM.s.family.length - 1];
+        if (last && p.parents) {
+          TM.drawPet({ genes: last.genes, stage: 'adult' }, 36, 84);
+          TM.drawPet({ genes: last.partner.genes, stage: 'adult' }, 92, 84, { flip: true });
+          G.spr(HEART_F, 61, 60);
+          G.text(last.name, 36, 88, { color: '#4a2f60', align: 'center' });
+          G.text(last.partner.name, 92, 88, { color: '#4a2f60', align: 'center' });
+        } else {
+          TM.drawPet(p, 64, 90);
+        }
+        G.text('せだい: ' + p.gen, 64, 104, { color: '#6b4a8a', align: 'center' });
+      }
+      pageDots();
+    },
+    btn(b) {
+      if (b === 'C') { TM.sfx('cancel'); return back(); }
+      TM.sfx('beep');
+      this.page = (this.page + (b === 'A' || b === 'B' ? 1 : 0)) % this.pages;
+    },
+    tap(x) { TM.sfx('beep'); this.page = (this.page + (x < 40 ? this.pages - 1 : 1)) % this.pages; },
+  };
+
+  // =============== FOOD SELECT ===============
+  TM.scenes.food = {
+    enter() { this.tab = null; this.i = 0; },
+    items() { return TM.list('food').filter((f) => f.kind === this.tab); },
+    draw(G, t) {
+      TM.drawHomeBG(G);
+      G.alpha(0.85); G.rect(0, 0, TM.W, TM.H, '#fff6fb'); G.alpha(1);
+      if (!this.tab) {
+        title(G, 'なにを たべる？');
+        ['meal', 'snack'].forEach((k, i) => {
+          const x = 10 + i * 58;
+          const sel = this.sel === i;
+          G.box(x, 34, 50, 60, sel ? { bg: '#ffe38a', border: '#ff9a3c' } : { bg: '#ffffff', border: '#ffc4d8' });
+          const f = TM.get('food', k === 'meal' ? 'omurice' : 'cake');
+          G.sprS(f.spr, x + 9, 44 + (sel && Math.floor(t / 300) % 2 ? -1 : 0), 2);
+          G.text(k === 'meal' ? 'ごはん' : 'おやつ', x + 25, 80, { color: '#4a2f60', align: 'center' });
+        });
+        G.msg('A:えらぶ B:けってい C:もどる', { y: 106 });
+        return;
+      }
+      const list = this.items();
+      const f = list[this.i];
+      title(G, this.tab === 'meal' ? 'ごはん' : 'おやつ');
+      G.box(32, 26, 64, 58, { bg: '#ffffff', border: '#ffc4d8' });
+      G.sprS(f.spr, 64 - f.spr.w, 55 - f.spr.h + (Math.floor(t / 400) % 2), 2);
+      G.spr(TM.ARROW_L, 20, 52);
+      G.spr(TM.ARROW_R, 105, 52);
+      G.text(f.name, 64, 90, { color: '#4a2f60', align: 'center' });
+      G.num((this.i + 1) + '/' + list.length, 64 - G.numW((this.i + 1) + '/' + list.length) / 2, 104, '#8a8aa2');
+      const tag = (f.hunger ? 'おなか+' + f.hunger + ' ' : '') + (f.happy ? 'ごきげん+' + f.happy : '');
+      G.text(tag, 64, 112, { color: '#ff6fa3', align: 'center' });
+    },
+    sel: 0,
+    choose() {
+      TM.sfx('ok');
+      TM.sc.go('eat', { food: this.items()[this.i] });
+    },
+    btn(b) {
+      if (!this.tab) {
+        if (b === 'A') { this.sel ^= 1; TM.sfx('beep'); }
+        if (b === 'B') { this.tab = this.sel ? 'snack' : 'meal'; this.i = 0; TM.sfx('ok'); }
+        if (b === 'C') { TM.sfx('cancel'); back(); }
+        return;
+      }
+      const n = this.items().length;
+      if (b === 'A') { this.i = (this.i + 1) % n; TM.sfx('beep'); }
+      if (b === 'B') this.choose();
+      if (b === 'C') { this.tab = null; TM.sfx('cancel'); }
+    },
+    tap(x, y) {
+      if (!this.tab) {
+        if (y > 30 && y < 96) {
+          const i = x < 64 ? 0 : 1;
+          if (this.sel === i) this.btn('B'); else { this.sel = i; TM.sfx('beep'); }
+        } else if (y > 104) this.btn('C');
+        return;
+      }
+      const n = this.items().length;
+      if (x < 32) { this.i = (this.i - 1 + n) % n; TM.sfx('beep'); }
+      else if (x > 96) { this.i = (this.i + 1) % n; TM.sfx('beep'); }
+      else if (y > 24 && y < 86) this.choose();
+      else if (y < 20) this.btn('C');
+    },
+  };
+
+  // =============== EAT ===============
+  TM.scenes.eat = {
+    enter(a) {
+      this.food = a.food; this.t = 0; this.bites = 0; this.done = false;
+      const p = GM.s.pet;
+      this.refuse = this.food.kind === 'meal' && p.hunger >= 4;
+    },
+    update(dt) {
+      A.update(dt, false);
+      this.t += dt;
+      const t = this.t;
+      if (this.refuse) {
+        if (t > 2.4) back('おなか いっぱい！');
+        return;
+      }
+      // bites at 0.9, 2.0, 3.1 s
+      const next = 0.9 + this.bites * 1.1;
+      if (this.bites < 3 && t >= next) {
+        this.bites++;
+        TM.sfx('eat');
+      }
+      if (this.bites >= 3 && !this.done && t > 4.0) {
+        this.done = true;
+        GM.feed(this.food);
+        TM.sfx('happy');
+        TM.fx.hearts(50, 70, 3);
+      }
+      if (t > 5.6) back(this.food.kind === 'meal' ? 'おいしかった！' : 'しあわせ〜♪');
+    },
+    draw(G, t) {
+      TM.drawHomeBG(G);
+      const p = GM.s.pet;
+      const px = 46;
+      const table = TM.ITEM.table;
+      // pet
+      let expr = { eyes: 'open', mouth: 'smile' };
+      let flip = false;
+      if (this.refuse) {
+        flip = Math.floor(this.t * 4) % 2 === 1;
+        expr = { eyes: 'closed', mouth: 'frown' };
+      } else if (this.done) expr = { eyes: 'happy', mouth: 'open' };
+      else if (this.bites > 0 || this.t > 0.6) {
+        const since = this.t - (0.9 + (this.bites - 1) * 1.1);
+        if (this.t > 0.6 && this.t < 0.9) expr = { eyes: 'open', mouth: 'open' };
+        else if (since < 0.8) expr = { eyes: 'closed', mouth: Math.floor(since * 8) % 2 ? 'chew' : 'smile' };
+        else expr = { eyes: 'open', mouth: this.bites < 3 ? 'open' : 'smile' };
+      }
+      TM.drawShadow(px, GROUND, 18);
+      TM.drawPet(p, px, GROUND, { expr: A.face(expr), frame: A.frame, flip });
+      // table + plate + food in front
+      G.spr(table, 64 - table.w / 2 + 16, GROUND - table.h + 4);
+      const ty = GROUND - table.h + 4;
+      const food = this.food;
+      if (!food.drink) G.spr(TM.ITEM.plate, 70, ty - 4);
+      let spr = food.spr;
+      if (this.bites === 1) spr = food._b1 || (food._b1 = TM.sprMask(food.spr, TM.BITE[0], true));
+      if (this.bites === 2) spr = food._b2 || (food._b2 = TM.sprMask(food.spr, TM.BITE[1], true));
+      if (this.bites < 3) {
+        const fx = 80 - Math.floor(food.spr.w / 2);
+        G.spr(spr, fx, ty - 2 - food.spr.h);
+        if (food.steam) G.spr(TM.ITEM.steam[Math.floor(t / 300) % 2], fx + 6, ty - food.spr.h - 9);
+      } else if (!food.drink) G.spr(TM.CRUMBS, 76, ty - 5);
+      TM.fx.draw(G);
+    },
+    btn() {}, tap() {},
+  };
+
+  // =============== TOILET ===============
+  TM.scenes.toilet = {
+    enter() {
+      this.t = 0;
+      this.mode = GM.s.pet.poops.length ? 'clean' : 'potty';
+      this.poops = GM.s.pet.poops.map((p) => Object.assign({}, p));
+      this.flushed = false;
+    },
+    update(dt) {
+      A.update(dt, false);
+      this.t += dt;
+      if (this.mode === 'clean') {
+        const waveX = 140 - this.t * 90;
+        this.poops = this.poops.filter((pp) => pp.x < waveX);
+        if (this.t > 0.05 && !this.snd) { this.snd = 1; TM.sfx('flush'); }
+        if (this.t > 1.9 && !this.flushed) { this.flushed = true; GM.clean(); TM.fx.sparkle(64, 100, 6); TM.sfx('happy'); }
+        if (this.t > 3.0) back('ぴかぴか！');
+      } else {
+        if (this.t > 2.2 && !this.flushed) {
+          this.flushed = true;
+          TM.sfx('flush');
+          GM.s.pet.pT = GM.CFG.poopEvery[1];
+          GM.s.pet.happy = Math.min(4, GM.s.pet.happy + 1);
+        }
+        if (this.t > 3.6) back('トイレ できたね！');
+      }
+    },
+    draw(G, t) {
+      TM.drawHomeBG(G);
+      const p = GM.s.pet;
+      if (this.mode === 'clean') {
+        for (const pp of this.poops) G.spr(TM.ITEM.poop[0], pp.x, GROUND - 4);
+        TM.drawPet(p, 30, GROUND, { expr: A.face(this.flushed ? { eyes: 'happy', mouth: 'open' } : { eyes: 'open', mouth: 'o' }), frame: A.frame });
+        const wx = Math.round(140 - this.t * 90);
+        for (let y = 60; y < TM.H; y += 8) G.spr(TM.ITEM.wave, wx, y);
+        G.rect(wx + 8, 60, 200, 68, '#5ab4ff');
+        G.alpha(0.5); G.rect(wx + 8, 60, 200, 68, '#ffffff'); G.alpha(1);
+        TM.fx.draw(G);
+        return;
+      }
+      const toi = TM.ITEM.toilet;
+      const tx = 64 - toi.w / 2;
+      G.spr(toi, tx, GROUND - toi.h);
+      const sitting = this.t > 0.6;
+      const strain = this.t > 0.8 && this.t < 2.2;
+      const expr = this.flushed ? { eyes: 'happy', mouth: 'open' } : strain ? { eyes: 'closed', mouth: 'line' } : { eyes: 'open', mouth: 'smile' };
+      const px = sitting ? 68 : 68 + (0.6 - this.t) * 60;
+      TM.drawPet(p, sitting ? 64 : px, sitting ? GROUND - 5 : GROUND, { expr: A.face(expr), frame: strain ? Math.floor(t / 120) % 2 : 0 });
+      if (sitting) G.spr(TM.ITEM.toiletFront, tx, GROUND - TM.ITEM.toiletFront.h);
+      if (strain) G.spr(TM.ITEM.sweat, 76, GROUND - 34);
+      if (this.flushed) {
+        for (let i = 0; i < 3; i++) G.spr(TM.ITEM.bubble[i % 3], tx + 4 + i * 4, GROUND - 12 - ((t / 40 + i * 5) % 16));
+      }
+      TM.fx.draw(G);
+    },
+    btn() {}, tap() {},
+  };
+
+  // =============== BATH ===============
+  TM.scenes.bath = {
+    enter() { this.t = 0; this.bub = []; TM.sfx('ok'); },
+    update(dt) {
+      A.update(dt, false);
+      this.t += dt;
+      if (Math.random() < dt * 6) this.bub.push({ x: 40 + U.rand(48), y: GROUND - 8, k: U.rand(3), s: 6 + U.rand(10) });
+      this.bub.forEach((b) => { b.y -= b.s * dt; b.x += Math.sin(b.y / 4) * 0.2; });
+      this.bub = this.bub.filter((b) => b.y > 40);
+      if (this.t > 3.6 && !this.done) { this.done = true; GM.bath(); TM.fx.sparkle(64, 80, 8); TM.sfx('happy'); }
+      if (this.t > 5) back('さっぱり！');
+    },
+    draw(G, t) {
+      TM.drawHomeBG(G);
+      const p = GM.s.pet;
+      const tub = TM.ITEM.tub;
+      const tx = 64 - tub.w / 2, ty = GROUND - tub.h + 2;
+      // pet sits inside the tub: draw pet, then the tub front over it
+      const bob = Math.floor(t / 400) % 2;
+      const expr = this.done ? { eyes: 'happy', mouth: 'open' } : { eyes: 'closed', mouth: bob ? 'o' : 'smile' };
+      TM.drawPet(p, 64, ty + 10 + bob, { expr: A.face(expr), frame: bob });
+      G.spr(TM.ITEM.foam, tx, ty - 1);
+      G.spr(tub, tx, ty);
+      G.spr(TM.ITEM.duck, tx + 20 + Math.round(Math.sin(t / 300) * 2), ty - 5 + bob);
+      // shower + drops
+      G.spr(TM.ITEM.shower, 84, 30);
+      if (!this.done) for (let i = 0; i < 6; i++) G.spr(TM.ITEM.drop, 86 + (i % 3) * 3 - i, 38 + ((t / 8 + i * 13) % 34));
+      for (const b of this.bub) G.spr(TM.ITEM.bubble[b.k], b.x, b.y);
+      TM.fx.draw(G);
+    },
+    btn() {}, tap() {},
+  };
+
+  // =============== MEDICINE ===============
+  TM.scenes.medicine = {
+    enter() { this.t = 0; this.sick = GM.s.pet.sick; },
+    update(dt) {
+      A.update(dt, false);
+      this.t += dt;
+      if (this.sick && this.t > 1.6 && !this.done) { this.done = true; GM.cure(); TM.sfx('happy'); TM.fx.sparkle(64, 86, 8); }
+      if (this.t > (this.sick ? 3.4 : 2)) back(this.sick ? 'げんきに なった！' : 'げんきだよ！');
+    },
+    draw(G, t) {
+      TM.drawHomeBG(G);
+      const p = GM.s.pet;
+      let expr = this.sick ? { eyes: 'sick', mouth: 'line' } : { eyes: 'closed', mouth: 'frown' };
+      if (this.sick && this.t > 1.0) expr = { eyes: 'cry', mouth: 'o' };
+      if (this.done) expr = { eyes: 'happy', mouth: 'open' };
+      const flip = !this.sick && Math.floor(this.t * 4) % 2;
+      TM.drawPet(p, 56, GROUND, { expr: A.face(expr), frame: A.frame, flip });
+      if (this.sick && this.t < 1.8) {
+        const sx = Math.max(70, 128 - this.t * 60);
+        G.sprS(TM.ITEM.syringe, sx, 82, 2, { flip: true });
+      }
+      TM.fx.draw(G);
+    },
+    btn() {}, tap() {},
+  };
+
+  // =============== TOY ===============
+  TM.scenes.toy = {
+    enter() { this.list = TM.ListMenu(TM.list('toy'), { rows: 4 }); this.playing = null; },
+    update(dt) {
+      A.update(dt, false);
+      if (!this.playing) return;
+      this.t += dt;
+      if (this.t > 4.5 && !this.done) {
+        this.done = true;
+        const p = GM.s.pet;
+        p.happy = Math.min(4, p.happy + (this.playing.happy || 1));
+        TM.sfx('happy');
+        TM.fx.hearts(64, 70, 3);
+      }
+      if (this.t > 5.6) back('たのしかった！');
+    },
+    draw(G, t) {
+      TM.drawHomeBG(G);
+      if (!this.playing) {
+        G.alpha(0.85); G.rect(0, 0, TM.W, TM.H, '#fff6fb'); G.alpha(1);
+        title(G, 'おもちゃ');
+        this.list.draw(G, 8, 24, 112, 22, (it, x, y, sel) => {
+          G.spr(it.spr, x + 14 - Math.floor(it.spr.w / 2), y + 11 - Math.floor(it.spr.h / 2));
+          G.text(it.name, x + 28, y + 6, { color: sel ? '#b8283a' : '#4a2f60' });
+        });
+        return;
+      }
+      const p = GM.s.pet, toy = this.playing, s = this.t;
+      const base = this.done ? { eyes: 'happy', mouth: 'open' } : { eyes: 'open', mouth: 'open' };
+      let px = 56, dy = 0;
+      if (toy.play === 'bounce') {
+        const ph = (s * 1.2) % 1;
+        const bx = 56 + Math.round(Math.sin(s * 2.4) * 24), by = GROUND - 44 - Math.round(Math.sin(ph * Math.PI) * 30);
+        px = bx;
+        if (ph < 0.12) dy = -3;
+        TM.drawPet(p, px, GROUND, { expr: A.face(base), frame: A.frame, dy });
+        G.spr(toy.spr, bx - 4, by);
+      } else if (toy.play === 'hug') {
+        TM.drawPet(p, 58, GROUND, { expr: A.face({ eyes: 'happy', mouth: 'smile' }), frame: A.frame });
+        G.spr(toy.spr, 66, GROUND - toy.spr.h - 2 + (A.frame ? 1 : 0));
+        if (Math.floor(s * 2) % 2 && !this.h1) { this.h1 = 1; TM.fx.hearts(64, 70, 1); }
+        if (Math.floor(s * 2) % 2 === 0) this.h1 = 0;
+      } else if (toy.play === 'float') {
+        dy = -Math.abs(Math.round(Math.sin(s * 5) * 4));
+        TM.drawPet(p, 56, GROUND, { expr: A.face(base), frame: A.frame, dy });
+        G.spr(toy.spr, 66 + Math.round(Math.sin(s * 2) * 3), 46 + Math.round(Math.cos(s * 3) * 2) + dy);
+      } else if (toy.play === 'spin') {
+        TM.drawPet(p, 50, GROUND, { expr: A.face(base), frame: A.frame });
+        const yy = 60 + Math.round(Math.abs(Math.sin(s * 4)) * 30);
+        G.rect(68, 58, 1, yy - 58, '#2b1d3a');
+        G.spr(toy.spr, 65, yy - 3);
+      } else if (toy.play === 'stack') {
+        TM.drawPet(p, 40, GROUND, { expr: A.face(base), frame: A.frame });
+        const n = Math.min(3, Math.floor(s / 1.2) + 1);
+        const bl = [['kkkkkk', 'kggggk', 'kggggk', 'kkkkkk'], ['kkkkkk', 'kuuuuk', 'kuuuuk', 'kkkkkk'], ['kkkkkk', 'kyyyyk', 'kyyyyk', 'kkkkkk']];
+        this._bl = this._bl || bl.map((r) => TM.spr(r));
+        for (let i = 0; i < n; i++) G.spr(this._bl[i], 76, GROUND - 4 - i * 4);
+      } else if (toy.play === 'sing') {
+        TM.drawPet(p, 56, GROUND, { expr: A.face({ eyes: 'closed', mouth: Math.floor(s * 4) % 2 ? 'open' : 'o' }), frame: A.frame });
+        G.spr(toy.spr, 64, GROUND - 22);
+        for (let i = 0; i < 3; i++) G.spr(TM.ITEM.note, 76 + i * 10, 50 - ((s * 20 + i * 12) % 30));
+      }
+      TM.fx.draw(G);
+    },
+    btn(b) {
+      if (this.playing) return;
+      if (b === 'A') this.list.next();
+      if (b === 'B') { this.playing = this.list.cur; this.t = 0; this.done = false; TM.sfx('ok'); }
+      if (b === 'C') { TM.sfx('cancel'); back(); }
+    },
+    tap(x, y) {
+      if (this.playing) return;
+      const i = this.list.hit(x, y, 8, 24, 112, 22);
+      if (i >= 0) { if (i === this.list.i) this.btn('B'); else { this.list.i = i; TM.sfx('beep'); } }
+      else if (y < 20) this.btn('C');
+      else this.list.next();
+    },
+  };
+
+  // =============== GAME: どっちむくかな？ ===============
+  TM.scenes.game = {
+    enter() { this.round = 0; this.win = 0; this.phase = 'ask'; this.t = 0; this.guess = 0; this.face = 0; this.hist = []; },
+    update(dt) {
+      A.update(dt, false);
+      this.t += dt;
+      if (this.phase === 'turn' && this.t > 0.5) {
+        this.phase = 'result';
+        this.t = 0;
+        this.ok = this.guess === this.face;
+        if (this.ok) { this.win++; TM.sfx('happy'); TM.fx.hearts(64, 64, 2); } else TM.sfx('sad');
+      } else if (this.phase === 'result' && this.t > 1.2) {
+        this.round++;
+        this.t = 0;
+        if (this.round >= 5) {
+          this.phase = 'end';
+          GM.play(this.win >= 3);
+          if (this.win >= 3) TM.sfx('fanfare');
+        } else this.phase = 'ask';
+      } else if (this.phase === 'end' && this.t > 2.4) back(this.win >= 3 ? 'かった！ +20P' : 'ざんねん…');
+    },
+    draw(G, t) {
+      TM.drawHomeBG(G);
+      const p = GM.s.pet;
+      title(G, 'どっちむくかな？');
+      let expr = { eyes: 'open', mouth: 'smile' }, flip = false;
+      if (this.phase === 'ask') flip = Math.floor(t / 300) % 2 === 0;
+      if (this.phase === 'turn' || this.phase === 'result') flip = this.face < 0;
+      if (this.phase === 'result') expr = this.ok ? { eyes: 'happy', mouth: 'open' } : { eyes: 'closed', mouth: 'frown' };
+      if (this.phase === 'end') expr = this.win >= 3 ? { eyes: 'happy', mouth: 'big' } : { eyes: 'cry', mouth: 'frown' };
+      TM.drawPet(p, 64, GROUND - 6, { expr: A.face(expr), frame: A.frame, flip });
+      // score dots
+      for (let i = 0; i < 5; i++) G.rect(40 + i * 10, 22, 6, 6, i < this.round ? (this.hist && this.hist[i] ? '#ff6fa3' : '#b4b4c8') : '#ffffff');
+      if (this.phase === 'ask') {
+        G.spr(TM.ARROW_L, 10, 96); G.spr(TM.ARROW_R, 114, 96);
+        G.msg('A:ひだり  B:みぎ', { y: 108 });
+      }
+      if (this.phase === 'end') G.msg(this.win + ' / 5  ' + (this.win >= 3 ? 'かち！' : 'まけ…'), { y: 108 });
+      TM.fx.draw(G);
+    },
+    pick(dir) {
+      if (this.phase !== 'ask') return;
+      this.guess = dir;
+      this.face = U.chance(0.5) ? -1 : 1;
+      this.phase = 'turn';
+      this.t = 0;
+      this.hist = this.hist || [];
+      this.hist[this.round] = this.guess === this.face;
+      TM.sfx('beep');
+    },
+    btn(b) {
+      if (b === 'A') this.pick(-1);
+      if (b === 'B') this.pick(1);
+      if (b === 'C') { TM.sfx('cancel'); back(); }
+    },
+    tap(x, y) { if (y < 20) return this.btn('C'); this.pick(x < 64 ? -1 : 1); },
+  };
+})();
+
+</script>
+<script>
+/*
+ * OUTING: choose place → travel → meet someone → (おみあい → wedding → egg)
+ * Also: hatch and grow (evolution) scenes.
+ */
+(function () {
+  'use strict';
+  const U = TM.util;
+  const GM = TM.game;
+  const A = TM.actor;
+  const back = (msg) => TM.sc.go('home', { msg, keepActor: true });
+
+  // =============== choose place ===============
+  TM.scenes.outing = {
+    enter() { this.list = TM.ListMenu(TM.list('place'), { rows: 4 }); },
+    update(dt) { A.update(dt, false); },
+    draw(G, t) {
+      const pl = this.list.cur;
+      pl.draw(G, t);
+      G.alpha(0.88); G.box(8, 30, 112, 94, { bg: '#fff6fb', border: '#ff6fa3' }); G.alpha(1);
+      TM.drawTitle(G, 'どこへ いく？');
+      this.list.draw(G, 12, 36, 104, 20, (it, x, y, sel) => {
+        G.text(it.name, x + 8, y + 5, { color: sel ? '#b8283a' : '#4a2f60' });
+      });
+    },
+    btn(b) {
+      if (b === 'A') this.list.next();
+      if (b === 'B') { TM.sfx('ok'); TM.sc.go('travel', { to: this.list.cur.id }); }
+      if (b === 'C') { TM.sfx('cancel'); back(); }
+    },
+    tap(x, y) {
+      const i = this.list.hit(x, y, 12, 36, 104, 20);
+      if (i >= 0) { if (i === this.list.i) this.btn('B'); else { this.list.i = i; TM.sfx('beep'); } }
+      else if (y < 28) this.btn('C');
+    },
+  };
+
+  // =============== travel (walking on the road) ===============
+  TM.scenes.travel = {
+    enter(a) { this.to = a.to; this.t = 0; this.msg = a.msg; },
+    update(dt) {
+      A.update(dt, false);
+      this.t += dt;
+      if (this.t > 2.6) {
+        if (this.to === 'home') back(this.msg || 'ただいま！');
+        else TM.sc.go('place', { place: this.to });
+      }
+    },
+    draw(G, t) {
+      const dir = this.to === 'home' ? -1 : 1;
+      TM.drawRoad(G, t, dir);
+      const p = GM.s.pet;
+      TM.drawShadow(64, 112, 18);
+      TM.drawPet(p, 64, 112, { expr: A.face({ eyes: 'open', mouth: 'smile' }), frame: A.frame, flip: dir < 0, dy: Math.floor(t / 150) % 2 ? -1 : 0 });
+      const name = this.to === 'home' ? 'おうち' : TM.get('place', this.to).name;
+      G.msg(name + 'へ おでかけ♪', { y: 4 });
+    },
+    btn() {}, tap() {},
+  };
+
+  // =============== at the place ===============
+  const OPTS = [
+    { id: 'hello', name: 'あいさつ' },
+    { id: 'gift', name: 'プレゼント' },
+    { id: 'omiai', name: 'おみあい' },
+    { id: 'next', name: 'ほかのこ' },
+    { id: 'home', name: 'かえる' },
+  ];
+  TM.scenes.place = {
+    enter(a) {
+      if (a.place) this.place = TM.get('place', a.place);
+      this.t = 0;
+      this.sx = 150;
+      this.anim = null;
+      this.menu = false;
+      this.sel = 0;
+      if (a.keep && this.npc) { this.sx = 92; this.menu = true; return; }
+      const p = GM.s.pet;
+      this.npc = TM.genetics.stranger(p.gender === 'm' ? 'f' : 'm');
+      this.npc.stage = 'adult';
+      if (p.stage !== 'adult' && U.chance(0.5)) this.npc.stage = p.stage === 'baby' ? 'baby' : 'child';
+    },
+    update(dt) {
+      A.update(dt, false);
+      this.t += dt;
+      if (this.sx > 92) {
+        this.sx = Math.max(92, this.sx - dt * 30);
+        if (this.sx === 92) { TM.sfx('call'); this.menu = true; }
+      }
+      if (this.anim) {
+        this.anim.t += dt;
+        if (this.anim.t > this.anim.len) {
+          const done = this.anim.done;
+          this.anim = null;
+          if (done) done();
+        }
+      }
+    },
+    draw(G, t) {
+      const pl = this.place;
+      pl.draw(G, t);
+      const g = pl.ground;
+      const p = GM.s.pet;
+      const an = this.anim;
+      let pe = { eyes: 'open', mouth: 'smile' }, ne = { eyes: 'open', mouth: 'smile' };
+      let pdy = 0, ndy = 0;
+      if (an && (an.id === 'hello' || an.id === 'gift')) {
+        pe = ne = { eyes: 'happy', mouth: 'open' };
+        pdy = -Math.abs(Math.round(Math.sin(an.t * 10) * 3));
+        ndy = -Math.abs(Math.round(Math.cos(an.t * 10) * 3));
+      }
+      if (an && an.id === 'nope') { ne = { eyes: 'closed', mouth: 'frown' }; pe = { eyes: 'cry', mouth: 'frown' }; }
+      TM.drawShadow(36, g, 18);
+      TM.drawPet(p, 36, g, { expr: A.face(pe), frame: A.frame, dy: pdy });
+      TM.drawShadow(this.sx, g, 18);
+      const walking = this.sx > 92;
+      TM.drawPet(this.npc, this.sx, g, { expr: ne, frame: Math.floor(t / 500) % 2, flip: true, dy: walking && Math.floor(t / 150) % 2 ? -1 : ndy });
+      if (!walking && this.t < 99 && !this.menu && !an) G.spr(TM.ITEM.exclaim, this.sx - 1, g - 44);
+      if (an && an.id === 'gift') {
+        const k = Math.min(1, an.t / 1);
+        G.spr(TM.ITEM.present, Math.round(U.lerp(44, 84, k)), g - 18 - Math.round(Math.sin(k * Math.PI) * 14));
+      }
+      TM.fx.draw(G);
+      // name tag
+      G.msg([this.npc.name + '「' + (an && an.line ? an.line : this.npc.line) + '」'], { y: 4 });
+      if (this.menu && !an) this.drawMenu(G);
+    },
+    drawMenu(G) {
+      G.alpha(0.94); G.box(64, 26, 62, 62, { bg: '#fff6fb', border: '#ff6fa3' }); G.alpha(1);
+      OPTS.forEach((o, i) => {
+        const y = 29 + i * 11.5;
+        const dis = o.id === 'omiai' && !this.canOmiai();
+        if (i === this.sel) G.spr(TM.ARROW_R, 68, Math.round(y) + 3);
+        G.text(o.name, 74, Math.round(y), { color: dis ? '#b4b4c8' : i === this.sel ? '#b8283a' : '#4a2f60' });
+      });
+    },
+    canOmiai() {
+      const p = GM.s.pet;
+      return GM.s.debug || (p.stage === 'adult' && this.npc.stage === 'adult');
+    },
+    act(id) {
+      const p = GM.s.pet;
+      const g = this.place.ground;
+      if (id === 'hello') {
+        TM.sfx('happy');
+        this.anim = { id, t: 0, len: 1.8, line: U.pick(['よろしくね！', 'また あそぼうね', 'なかよし〜♪', 'えへへ']) };
+        TM.fx.hearts(64, g - 30, 2);
+        p.happy = Math.min(4, p.happy + 1);
+        GM.s.points += 5;
+        if (!GM.s.met.includes(this.npc.name)) GM.s.met.push(this.npc.name);
+      } else if (id === 'gift') {
+        if (GM.s.points < 10) { TM.sfx('cancel'); this.anim = { id: 'nope', t: 0, len: 1.2, line: 'ポイントが たりないよ' }; return; }
+        GM.s.points -= 10;
+        TM.sfx('ok');
+        this.anim = { id, t: 0, len: 1.8, line: 'わあ、ありがとう！', done: () => TM.fx.hearts(92, g - 30, 3) };
+        p.happy = Math.min(4, p.happy + 2);
+      } else if (id === 'omiai') {
+        if (!this.canOmiai()) { TM.sfx('cancel'); this.anim = { id: 'nope', t: 0, len: 1.4, line: 'おとなに なってからね' }; return; }
+        TM.sfx('ok');
+        TM.sc.go('omiai', { npc: this.npc, place: this.place.id });
+      } else if (id === 'next') {
+        TM.sfx('beep');
+        this.enter({});
+      } else if (id === 'home') {
+        TM.sfx('cancel');
+        TM.sc.go('travel', { to: 'home' });
+      }
+    },
+    btn(b) {
+      if (!this.menu || this.anim) return;
+      if (b === 'A') { this.sel = (this.sel + 1) % OPTS.length; TM.sfx('beep'); }
+      if (b === 'B') this.act(OPTS[this.sel].id);
+      if (b === 'C') this.act('home');
+    },
+    tap(x, y) {
+      if (!this.menu || this.anim) return;
+      if (x >= 64 && y >= 27 && y < 88) {
+        const i = Math.floor((y - 28) / 11.5);
+        if (i >= 0 && i < OPTS.length) { if (i === this.sel) this.act(OPTS[i].id); else { this.sel = i; TM.sfx('beep'); } }
+      }
+    },
+  };
+
+  // =============== おみあい (love meter timing game) ===============
+  TM.scenes.omiai = {
+    enter(a) {
+      this.npc = a.npc; this.placeId = a.place;
+      this.t = 0; this.phase = 'meter'; this.v = 0; this.dir = 1;
+      this.zone = [0.62 + Math.random() * 0.12, 0];
+      this.zone[1] = this.zone[0] + 0.18;
+      this.speed = 1.1 + Math.random() * 0.5;
+    },
+    update(dt) {
+      A.update(dt, false);
+      this.t += dt;
+      if (this.phase === 'meter') {
+        this.v += this.dir * dt * this.speed;
+        if (this.v >= 1) { this.v = 1; this.dir = -1; }
+        if (this.v <= 0) { this.v = 0; this.dir = 1; }
+      } else if (this.phase === 'result' && this.t > 2.2) {
+        if (this.ok) TM.sc.go('wedding', { npc: this.npc });
+        else TM.sc.go('place', { keep: true });
+      }
+    },
+    draw(G, t) {
+      G.clear('#fff0f8');
+      for (let i = 0; i < 12; i++) G.spr(TM.ITEM.heartS, (i * 29 + t / 30) % 132 - 4, (i * 47) % 120 + 4);
+      TM.drawTitle(G, 'おみあい');
+      const p = GM.s.pet;
+      let pe = { eyes: 'open', mouth: 'smile' }, ne = pe;
+      if (this.phase === 'result') pe = ne = this.ok ? { eyes: 'happy', mouth: 'open' } : { eyes: 'closed', mouth: 'frown' };
+      TM.drawPet(p, 32, 84, { expr: A.face(pe), frame: A.frame });
+      TM.drawPet(this.npc, 96, 84, { expr: ne, frame: A.frame, flip: true });
+      // meter
+      const mx = 14, my = 94, mw = 100;
+      G.rect(mx - 1, my - 1, mw + 2, 10, '#8e2f5c');
+      G.rect(mx, my, mw, 8, '#ffffff');
+      G.rect(mx + Math.round(this.zone[0] * mw), my, Math.round((this.zone[1] - this.zone[0]) * mw), 8, '#ff9ec2');
+      G.rect(mx, my, Math.round(this.v * mw), 3, '#ff6fa3');
+      G.spr(TM.ITEM.heart, mx + Math.round(this.v * mw) - 3, my - 7);
+      if (this.phase === 'meter') G.text('Bで ハートを とめよう！', 64, 110, { color: '#8e2f5c', align: 'center' });
+      else G.text(this.ok ? 'だいせいこう！' : 'ごめんなさい…', 64, 110, { color: this.ok ? '#ff4d5e' : '#6e6e88', align: 'center' });
+      TM.fx.draw(G);
+      if (this.phase === 'result' && this.ok) {
+        G.spr(TM.ITEM.heart, 60, 50 - Math.round(Math.abs(Math.sin(t / 150)) * 3));
+      }
+    },
+    stop() {
+      if (this.phase !== 'meter') return;
+      this.phase = 'result';
+      this.t = 0;
+      this.ok = (this.v >= this.zone[0] && this.v <= this.zone[1]) || (GM.s.debug && GM.s.alwaysLove);
+      if (this.ok) { TM.sfx('fanfare'); TM.fx.hearts(64, 60, 6); } else TM.sfx('sad');
+    },
+    btn(b) { if (b === 'C' && this.phase === 'meter') { TM.sfx('cancel'); TM.sc.go('place', { keep: true }); } else this.stop(); },
+    tap() { this.stop(); },
+  };
+
+  // =============== wedding ===============
+  TM.scenes.wedding = {
+    enter(a) { this.npc = a.npc; this.partner = a.npc; this.t = 0; this.stage = 0; this.breed = a.breed || TM.genetics.breed(GM.s.pet.genes, a.npc.genes); TM.sfx('wed'); },
+    update(dt) {
+      A.update(dt, false);
+      this.t += dt;
+      if (this.t > 1.5 && this.stage === 0) { this.stage = 1; TM.fx.hearts(64, 60, 6); }
+      if (this.t > 3.5 && this.stage === 1) { this.stage = 2; TM.sfx('hatch'); TM.fx.sparkle(64, 100, 8); }
+      if (this.t > 6 && this.stage === 2) {
+        this.stage = 3;
+        const old = GM.s.pet;
+        this.oldName = old.name;
+        GM.marry(this.partner, this.breed);
+        TM.sc.go('farewell', { a: old, b: this.partner });
+      }
+    },
+    draw(G, t) {
+      TM.drawChapel(G, t);
+      const p = GM.s.pet;
+      const e = this.stage >= 1 ? { eyes: 'happy', mouth: 'open' } : { eyes: 'open', mouth: 'smile' };
+      TM.drawPet(p, 44, 110, { expr: A.face(e), frame: A.frame });
+      TM.drawPet(this.partner, 84, 110, { expr: e, frame: A.frame, flip: true });
+      G.spr(TM.ITEM.bell, 61, 44 + (Math.floor(t / 200) % 2));
+      if (this.stage >= 2) {
+        const eg = TM.STAGE.egg;
+        const gp = TM.get('color', this.breed.genes.color);
+        G.spr(eg, 64 - eg.w / 2, 112 - eg.h - Math.round(Math.abs(Math.sin(t / 200)) * 2), { gp });
+      }
+      TM.fx.draw(G);
+      G.msg(this.stage >= 2 ? 'たまごを さずかった！' : 'けっこん おめでとう！', { y: 4 });
+    },
+    btn() {}, tap() {},
+  };
+
+  // =============== farewell: parents leave, egg stays ===============
+  TM.scenes.farewell = {
+    enter(a) { this.a = a.a; this.b = a.b; this.t = 0; },
+    update(dt) {
+      this.t += dt;
+      if (this.t > 4.2) TM.sc.go('home', { msg: 'あたらしい たまご！' });
+    },
+    draw(G, t) {
+      TM.drawRoad(G, t, 1);
+      const k = Math.max(0, this.t - 1) * 26;
+      TM.drawPet(this.a, 50 + k, 112, { expr: { eyes: 'happy', mouth: 'smile' }, frame: Math.floor(t / 300) % 2, dy: Math.floor(t / 150) % 2 ? -1 : 0 });
+      TM.drawPet(this.b, 76 + k, 112, { expr: { eyes: 'happy', mouth: 'smile' }, frame: Math.floor(t / 300) % 2, dy: Math.floor(t / 150) % 2 ? 0 : -1 });
+      G.msg([this.a.name + 'と ' + this.b.name + 'は', 'ふたりで たびに でたよ'], { y: 4 });
+    },
+    btn(b) { if (b === 'B' || b === 'C') this.t = 99; }, tap() { this.t = 99; },
+  };
+
+  // =============== hatch ===============
+  TM.scenes.hatch = {
+    enter() { this.t = 0; this.hatched = false; },
+    update(dt) {
+      A.update(dt, false);
+      this.t += dt;
+      if (this.t > 3 && !this.hatched) {
+        this.hatched = true;
+        GM.grow(true);
+        TM.sfx('hatch');
+        TM.fx.sparkle(64, 96, 10);
+      }
+      if (this.t > 6) TM.sc.go('home', { msg: GM.s.pet.name + 'が うまれたよ！' });
+    },
+    draw(G, t) {
+      TM.drawHomeBG(G);
+      const p = GM.s.pet;
+      const gp = TM.get('color', p.genes.color);
+      const eg = TM.STAGE.egg;
+      const ex = 64 - eg.w / 2, ey = 108 - eg.h;
+      if (!this.hatched) {
+        const shake = this.t > 1 ? (Math.floor(t / 80) % 2 ? 1 : -1) : Math.floor(t / 300) % 2;
+        G.spr(eg, ex + shake, ey, { gp });
+        const c = this.t > 2.2 ? 1 : this.t > 1.2 ? 0 : -1;
+        if (c >= 0) G.spr(TM.STAGE.crack[c], ex + shake, ey);
+      } else {
+        TM.drawPet(p, 64, 108, { expr: A.face({ eyes: this.t > 4 ? 'open' : 'closed', mouth: 'open' }), frame: A.frame });
+        const s = TM.STAGE.shell;
+        G.spr(s, 64 - s.w / 2, 108 - s.h + 1, { gp });
+      }
+      TM.fx.draw(G);
+      if (this.t > 4) G.msg(p.name + 'が うまれた！', { y: 4 });
+    },
+    btn() {}, tap() {},
+  };
+
+  // =============== grow (evolution) ===============
+  TM.scenes.grow = {
+    enter(a) { this.from = a.from; this.t = 0; TM.sfx('fanfare'); },
+    update(dt) {
+      A.update(dt, false);
+      this.t += dt;
+      if (Math.random() < dt * 8) TM.fx.sparkle(64, 90, 1);
+      if (this.t > 4.5) TM.sc.go('home', { msg: TM.STAGE_NAME[GM.s.pet.stage] + 'に なった！' });
+    },
+    draw(G, t) {
+      TM.drawHomeBG(G);
+      G.alpha(0.5); G.rect(0, 0, TM.W, TM.H, '#ffffff'); G.alpha(1);
+      const p = GM.s.pet;
+      // alternate old / new form, faster and faster
+      const speed = Math.max(60, 400 - this.t * 120);
+      const showNew = this.t > 3 || Math.floor((this.t * 1000) / speed) % 2 === 1;
+      const who = showNew ? p : { genes: p.genes, stage: this.from };
+      TM.drawPet(who, 64, 104, { expr: A.face(this.t > 3 ? { eyes: 'happy', mouth: 'open' } : { eyes: 'closed', mouth: 'smile' }) });
+      TM.fx.draw(G);
+      if (this.t > 3) G.msg(TM.STAGE_NAME[p.stage] + 'に なった！', { y: 4 });
+    },
+    btn() {}, tap() {},
+  };
+})();
+
+</script>
+<script>
+/*
+ * INFO scenes: room (もようがえ), family tree (かけいず), part dex (ずかん).
+ */
+(function () {
+  'use strict';
+  const GM = TM.game;
+  const A = TM.actor;
+  const back = (msg) => TM.sc.go('home', { msg, keepActor: true });
+
+  // =============== ROOM ===============
+  TM.scenes.room = {
+    enter() {
+      this.ids = TM.ids('room');
+      this.i = Math.max(0, this.ids.indexOf(GM.s.room));
+    },
+    update(dt) { A.update(dt, true, 20, 108); },
+    draw(G, t) {
+      const room = TM.get('room', this.ids[this.i]);
+      TM.drawRoom(room, TM.SKY[GM.skyKey()]);
+      const p = GM.s.pet;
+      if (p.stage !== 'egg') {
+        TM.drawShadow(A.x, 108, 18);
+        TM.drawPet(p, A.x, 108, { expr: A.face(), frame: A.frame, flip: A.dir < 0, dy: A.hopY() });
+      } else TM.drawPet(p, 64, 108);
+      G.spr(TM.ARROW_L, 3, 58);
+      G.spr(TM.ARROW_R, 122, 58);
+      G.msg([room.name, 'A:つぎ B:きめる C:もどる'], { y: 100 });
+    },
+    btn(b) {
+      if (b === 'A') { this.i = (this.i + 1) % this.ids.length; TM.sfx('beep'); }
+      if (b === 'B') { GM.s.room = this.ids[this.i]; GM.save(); TM.sfx('ok'); back('もようがえ したよ！'); }
+      if (b === 'C') { TM.sfx('cancel'); back(); }
+    },
+    tap(x, y) {
+      if (y > 98) return this.btn('B');
+      const n = this.ids.length;
+      this.i = (this.i + (x < 64 ? n - 1 : 1)) % n;
+      TM.sfx('beep');
+    },
+  };
+
+  // =============== FAMILY TREE ===============
+  // Shows every generation: Gen N | you | ♥ | partner  (newest on top)
+  const HEART = TM.spr(['.rr.rr.', 'rwrrrrr', 'rrrrrrr', '.rrrrr.', '..rrr..', '...r...']);
+  TM.scenes.family = {
+    enter() { this.top = 0; },
+    rows() {
+      const s = GM.s;
+      const rows = s.family.map((f) => ({ gen: f.gen, me: { genes: f.genes, stage: 'adult', name: f.name, gender: f.gender }, partner: f.partner }));
+      rows.push({ gen: s.pet.gen, me: s.pet, partner: null, cur: true });
+      return rows.reverse();
+    },
+    draw(G, t) {
+      G.clear('#f8f6ff');
+      const rows = this.rows();
+      const RH = 42;
+      for (let r = 0; r < 3; r++) {
+        const row = rows[this.top + r];
+        if (!row) break;
+        const y = 18 + r * RH;
+        G.rect(0, y, TM.W, RH, r % 2 ? '#fffbd8' : '#f8f6ff');
+        G.text('Gen', 4, y + 10, { color: '#4a2f60' });
+        G.num(String(row.gen), 6, y + 22, '#4a2f60');
+        TM.drawPet(row.me, 48, y + RH - 1, { expr: { eyes: 'open', mouth: 'smile' }, frame: row.cur ? A.frame : 0 });
+        if (row.me.stage !== 'egg') G.spr(TM.GENDER_SPR[row.me.gender], 62, y + 2);
+        if (row.partner) {
+          G.spr(HEART, 72, y + 24);
+          TM.drawPet({ genes: row.partner.genes, stage: 'adult' }, 104, y + RH - 1, { expr: { eyes: 'open', mouth: 'smile' }, flip: true });
+        } else if (row.cur) G.text('いま', 104, y + 18, { color: '#ff6fa3', align: 'center' });
+      }
+      TM.drawTitle(G, 'かけいず');
+      if (this.top > 0) G.spr(TM.ARROW_UP, 118, 20);
+      if (this.top + 3 < rows.length) G.spr(TM.ARROW_DN, 118, 122);
+    },
+    btn(b) {
+      const n = this.rows().length;
+      if (b === 'A' || b === 'B') { this.top = this.top + 1 >= n ? 0 : this.top + 1; TM.sfx('beep'); }
+      if (b === 'C') { TM.sfx('cancel'); back(); }
+    },
+    tap(x, y) {
+      if (y < 16) return this.btn('C');
+      const n = this.rows().length;
+      if (y < 64) this.top = Math.max(0, this.top - 1);
+      else this.top = Math.min(Math.max(0, n - 1), this.top + 1);
+      TM.sfx('beep');
+    },
+  };
+
+  // =============== ZUKAN (discovered parts) ===============
+  const sil = new Map();
+  function silhouette(c) {
+    let s = sil.get(c);
+    if (s) return s;
+    s = document.createElement('canvas');
+    s.width = c.width; s.height = c.height;
+    const x = s.getContext('2d');
+    x.drawImage(c, 0, 0);
+    x.globalCompositeOperation = 'source-in';
+    x.fillStyle = '#c8c0dc';
+    x.fillRect(0, 0, s.width, s.height);
+    sil.set(c, s);
+    return s;
+  }
+  TM.scenes.zukan = {
+    enter() { this.cat = 0; this.page = 0; },
+    draw(G, t) {
+      G.clear('#f4fff8');
+      const k = TM.genetics.KEYS[this.cat];
+      const ids = TM.ids(k);
+      const seen = GM.s.seen[k] || {};
+      const cnt = ids.filter((id) => seen[id]).length;
+      TM.drawTitle(G, 'ずかん: ' + TM.look.GENE_NAMES[k]);
+      G.num(cnt + '/' + ids.length, 128 - G.numW(cnt + '/' + ids.length) - 4, 22, '#3f9a4a');
+      const per = 6;
+      const pages = Math.ceil(ids.length / per);
+      if (this.page >= pages) this.page = 0;
+      const base = Object.assign({}, GM.s.pet.genes);
+      for (let i = 0; i < per; i++) {
+        const id = ids[this.page * per + i];
+        if (!id) break;
+        const cx = 22 + (i % 3) * 42, cy = 30 + Math.floor(i / 3) * 48;
+        G.box(cx - 20, cy, 40, 46, { bg: '#ffffff', border: seen[id] ? '#7ed56f' : '#d4ddf0' });
+        const g = Object.assign({}, base, { [k]: id });
+        const c = TM.look.canvas(g, 'adult', { eyes: 'open', mouth: 'smile' }, 0);
+        G.img(seen[id] ? c : silhouette(c), cx - 20, cy - 2);
+        if (seen[id]) G.text(TM.get(k, id).name.slice(0, 5), cx, cy + 36, { color: '#3e6a1e', align: 'center' });
+        else G.text('？？？', cx, cy + 36, { color: '#8a8aa2', align: 'center' });
+      }
+      G.num((this.page + 1) + '/' + pages, 4, 22, '#8a8aa2');
+    },
+    btn(b) {
+      const k = TM.genetics.KEYS[this.cat];
+      const pages = Math.ceil(TM.ids(k).length / 6);
+      if (b === 'A') {
+        this.page++;
+        if (this.page >= pages) { this.page = 0; this.cat = (this.cat + 1) % TM.genetics.KEYS.length; }
+        TM.sfx('beep');
+      }
+      if (b === 'B') { this.cat = (this.cat + 1) % TM.genetics.KEYS.length; this.page = 0; TM.sfx('beep'); }
+      if (b === 'C') { TM.sfx('cancel'); back(); }
+    },
+    tap(x, y) { if (y < 18) return this.btn('C'); this.btn(x < 64 ? 'B' : 'A'); },
+  };
+})();
+
+</script>
+<script>
+/*
+ * DEBUG MODE — check genetics quickly.
+ *  - change time speed, grow instantly, set stats
+ *  - edit the current pet's 5 genes
+ *  - pick any partner (preset / random / custom) and marry any time
+ *  - simulate many children to see the inheritance
+ */
+(function () {
+  'use strict';
+  const GM = TM.game;
+  const GN = TM.genetics;
+  const D = (TM.debug = {});
+  const KEYS = () => GN.KEYS;
+
+  const h = (tag, attrs, kids) => {
+    const e = document.createElement(tag);
+    Object.entries(attrs || {}).forEach(([k, v]) => {
+      if (k === 'on') Object.entries(v).forEach(([ev, fn]) => e.addEventListener(ev, fn));
+      else if (k === 'text') e.textContent = v;
+      else e.setAttribute(k, v);
+    });
+    (kids || []).forEach((c) => e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c));
+    return e;
+  };
+  const btn = (text, fn) => h('button', { on: { click: () => { fn(); D.refresh(); } } }, [text]);
+
+  // big (x3) preview canvas of a character
+  function preview(genes, stage, scale) {
+    scale = scale || 3;
+    const c = h('canvas', { width: TM.look.W * scale, height: TM.look.H * scale });
+    const x = c.getContext('2d');
+    x.imageSmoothingEnabled = false;
+    x.drawImage(TM.look.canvas(genes, stage || 'adult', { eyes: 'open', mouth: 'smile' }, 0), 0, 0, TM.look.W * scale, TM.look.H * scale);
+    return c;
+  }
+  function geneSelects(genes, onChange) {
+    const box = h('div', { class: 'genes' });
+    KEYS().forEach((k) => {
+      const sel = h('select', { on: { change: () => { genes[k] = sel.value; onChange(); } } });
+      TM.list(k).forEach((p) => sel.appendChild(h('option', { value: p.id, text: p.name })));
+      sel.value = genes[k];
+      box.appendChild(h('span', { text: TM.look.GENE_NAMES[k] }));
+      box.appendChild(sel);
+    });
+    return box;
+  }
+
+  D.partner = null;
+  D.init = function () {
+    const panel = document.getElementById('debug');
+    const b = document.getElementById('debugBtn');
+    b.addEventListener('click', () => {
+      panel.hidden = !panel.hidden;
+      GM.s.debug = !panel.hidden;
+      b.classList.toggle('on', !panel.hidden);
+      if (!panel.hidden) D.refresh();
+    });
+    const m = document.getElementById('muteBtn');
+    m.addEventListener('click', () => { TM.muted = !TM.muted; m.textContent = 'おと: ' + (TM.muted ? 'OFF' : 'ON'); });
+    if (GM.s.debug) { panel.hidden = false; b.classList.add('on'); D.refresh(); }
+  };
+
+  D.refresh = function () {
+    const panel = document.getElementById('debug');
+    if (panel.hidden) return;
+    panel.innerHTML = '';
+    const s = GM.s, p = s.pet;
+    if (!D.partner) D.partner = { name: TM.util.makeName(), gender: p.gender === 'm' ? 'f' : 'm', genes: GN.random() };
+
+    // ---- time & growth ----
+    panel.appendChild(h('h3', { text: 'じかん・せいちょう' }));
+    const speed = h('select', { on: { change: () => { s.timeScale = +speed.value; } } });
+    [[1, '1ばい'], [60, '60ばい（1ぷん/びょう）'], [600, '600ばい'], [3600, '3600ばい（1じかん/びょう）']].forEach(([v, t]) => speed.appendChild(h('option', { value: v, text: t })));
+    speed.value = s.timeScale;
+    const clock = h('select', { on: { change: () => { s.clockOffset = +clock.value; } } });
+    for (let o = -12; o <= 12; o++) clock.appendChild(h('option', { value: o, text: (o >= 0 ? '+' : '') + o + 'じかん' }));
+    clock.value = s.clockOffset || 0;
+    panel.appendChild(h('div', { class: 'row' }, [h('label', {}, ['はやさ ', speed]), h('label', {}, ['とけい ', clock])]));
+    panel.appendChild(h('div', { class: 'row' }, [
+      h('span', { text: 'いま: ' + TM.STAGE_NAME[p.stage] + ' / だい' + p.gen + 'せだい / ' + p.name }),
+    ]));
+    panel.appendChild(h('div', { class: 'row' }, [
+      btn('つぎへ せいちょう', () => {
+        if (p.stage === 'egg') { p.stageT = GM.CFG.stageTime.egg; TM.sc.go('home'); return; }
+        const from = p.stage;
+        if (GM.grow(true)) TM.sc.go('grow', { from });
+      }),
+      btn('すぐ おとなに', () => {
+        const from = p.stage;
+        while (p.stage !== 'adult') GM.grow(true);
+        TM.sc.go('grow', { from: from === 'adult' ? 'child' : from });
+      }),
+      btn('たまごに もどす', () => { p.stage = 'egg'; p.stageT = 0; TM.sc.go('home'); }),
+    ]));
+
+    // ---- stats ----
+    panel.appendChild(h('h3', { text: 'ステータス' }));
+    panel.appendChild(h('div', { class: 'row' }, [
+      btn('おなかMAX', () => (p.hunger = 4)),
+      btn('ごきげんMAX', () => (p.happy = 4)),
+      btn('おなか0', () => (p.hunger = 0)),
+      btn('うんち', () => p.poops.length < 4 && p.poops.push({ x: 10 + TM.util.rand(100), t: 0 })),
+      btn('びょうき', () => (p.sick = true)),
+      btn('なおす', () => (p.sick = false)),
+      btn('+100P', () => (s.points += 100)),
+      btn('おこす', () => { p.sleeping = false; s.clockOffset = 12 - new Date().getHours(); }),
+    ]));
+
+    // ---- current pet genes ----
+    panel.appendChild(h('h3', { text: 'いまのキャラの いでんし' }));
+    const pair = h('div', { class: 'pair' });
+    const left = h('div');
+    left.appendChild(preview(p.genes, 'adult'));
+    left.appendChild(geneSelects(p.genes, () => { GM.markSeen(p.genes); D.refresh(); }));
+    left.appendChild(h('div', { class: 'row' }, [btn('ランダム', () => { p.genes = GN.random(); GM.markSeen(p.genes); })]));
+
+    // ---- partner ----
+    const right = h('div');
+    right.appendChild(preview(D.partner.genes, 'adult'));
+    right.appendChild(geneSelects(D.partner.genes, () => D.refresh()));
+    const preset = h('select', {
+      on: {
+        change: () => {
+          const c = TM.get('character', preset.value);
+          if (c) D.partner = { name: c.name, gender: c.gender, genes: Object.assign({}, c.genes) };
+          D.refresh();
+        },
+      },
+    });
+    preset.appendChild(h('option', { value: '', text: '— キャラから えらぶ —' }));
+    TM.list('character').forEach((c) => preset.appendChild(h('option', { value: c.id, text: c.name })));
+    right.appendChild(h('div', { class: 'row' }, [preset, btn('ランダム', () => (D.partner = { name: TM.util.makeName(), gender: p.gender === 'm' ? 'f' : 'm', genes: GN.random() }))]));
+    pair.appendChild(h('div', {}, [h('b', { text: 'じぶん (ちち/はは A)' }), left]));
+    pair.appendChild(h('div', {}, [h('b', { text: 'あいて: ' + D.partner.name + ' (B)' }), right]));
+    panel.appendChild(pair);
+
+    // ---- breeding ----
+    panel.appendChild(h('h3', { text: 'こうはい テスト' }));
+    const kids = h('div', { class: 'kids' });
+    const simulate = () => {
+      kids.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        const r = GN.breed(p.genes, D.partner.genes);
+        const k = h('div', { class: 'kid' });
+        k.appendChild(preview(r.genes, 'adult', 2));
+        k.appendChild(h('div', {}, KEYS().map((g) => h('span', { class: 'src-' + r.src[g], text: { a: 'A', b: 'B', m: '変' }[r.src[g]] }))));
+        k.title = GN.describe(r.genes);
+        kids.appendChild(k);
+      }
+    };
+    panel.appendChild(h('div', { class: 'row' }, [
+      h('button', { on: { click: simulate } }, ['こどもを 12かい シミュレート']),
+      btn('この あいてと けっこん！', () => TM.sc.go('wedding', { npc: Object.assign({ stage: 'adult' }, JSON.parse(JSON.stringify(D.partner))) })),
+      btn('おでかけで であう', () => { TM.sc.go('place', { place: TM.util.pick(TM.ids('place')) }); }),
+    ]));
+    const love = h('input', { type: 'checkbox' });
+    love.checked = !!s.alwaysLove;
+    love.addEventListener('change', () => (s.alwaysLove = love.checked));
+    panel.appendChild(h('div', { class: 'row' }, [h('label', {}, [love, 'おみあい かならず せいこう']), h('span', { class: 'log', text: 'A=じぶん B=あいて 変=とつぜんへんい (' + Math.round(GN.MUTATION * 100) + '%)' })]));
+    panel.appendChild(kids);
+
+    // ---- history ----
+    if (s.family.length) {
+      panel.appendChild(h('h3', { text: 'せだいの きろく' }));
+      s.family.slice().reverse().forEach((f) => {
+        const r = h('div', { class: 'row' });
+        r.appendChild(h('span', { text: 'Gen' + f.gen + ' ' + f.name + ' ♥ ' + f.partner.name + ' → ' }));
+        r.appendChild(preview(f.child, 'adult', 1));
+        if (f.src) r.appendChild(h('span', {}, KEYS().map((g) => h('span', { class: 'src-' + f.src[g], text: { a: 'A', b: 'B', m: '変' }[f.src[g]] }))));
+        panel.appendChild(r);
+      });
+    }
+
+    panel.appendChild(h('h3', { text: 'セーブ' }));
+    panel.appendChild(h('div', { class: 'row' }, [
+      btn('セーブ', () => GM.save()),
+      btn(D.armReset ? 'ほんとうに けす？（もういちど おす）' : 'ぜんぶ けす（さいしょから）', () => {
+        if (!D.armReset) { D.armReset = true; setTimeout(() => { D.armReset = false; D.refresh(); }, 4000); return; }
+        D.armReset = false; GM.reset(); TM.sc.go('home');
+      }),
+    ]));
+  };
+
+  // keep the "now" line fresh when scenes change the pet
+  let last = '';
+  TM.onFrame = function () {
+    const p = GM.s.pet;
+    const key = p.id + p.stage + JSON.stringify(p.genes) + GM.s.family.length;
+    if (key !== last) { last = key; D.refresh(); }
+  };
+})();
+
+</script>
+<script>
+/*
+ * Boot, main loop and input.
+ */
+(function () {
+  'use strict';
+  const GM = TM.game;
+  const G = TM.gfx;
+  const PREV = { baby: 'egg', child: 'baby', adult: 'child' };
+  TM.pendingGrow = null;
+
+  let last = 0, acc = 0, saveT = 0;
+  function frame(ts) {
+    const dt = Math.min(0.1, (ts - (last || ts)) / 1000);
+    last = ts;
+    // simulation in game seconds
+    acc += dt * (GM.s.timeScale || 1);
+    let guard = 0;
+    while (acc >= 1 && guard++ < 400) {
+      const step = Math.min(acc, 30);
+      GM.simulate(step);
+      acc -= step;
+    }
+    const sc = TM.sc.cur;
+    TM.sc.t += dt * 1000;
+    // growth happens between scenes: show it when we are home
+    if (TM.pendingGrow && TM.sc.name === 'home') {
+      const from = TM.pendingGrow;
+      TM.pendingGrow = null;
+      TM.sc.go('grow', { from });
+    }
+    if (sc.update) sc.update(dt);
+    TM.fx.update(dt);
+    G.begin();
+    TM.sc.cur.draw(G, ts);
+    saveT += dt;
+    if (saveT > 5) { saveT = 0; GM.save(); }
+    if (TM.onFrame) TM.onFrame(dt);
+    requestAnimationFrame(frame);
+  }
+
+  function press(b) {
+    const sc = TM.sc.cur;
+    if (sc && sc.btn) sc.btn(b);
+  }
+  TM.press = press;
+
+  function fitScreen() {
+    const cv = document.getElementById('screen');
+    const box = cv.parentElement;
+    // leave a thin dark bezel around the screen; the canvas is centred by CSS
+    const avail = Math.min(box.clientWidth, box.clientHeight) * 0.94;
+    const dpr = window.devicePixelRatio || 1;
+    // integer number of device pixels per world pixel => perfectly even dots
+    const s = Math.max(1, Math.floor((avail * dpr) / TM.W));
+    let css = (s * TM.W) / dpr;
+    if (css < avail * 0.86) css = avail; // too much shrink: fill (still nearest-neighbour)
+    cv.style.width = css + 'px';
+    cv.style.height = css + 'px';
+  }
+
+  TM.boot = function () {
+    const cv = document.getElementById('screen');
+    G.init(cv);
+    GM.load();
+    GM.on((ev, arg) => {
+      if (ev === 'grow' && arg !== 'baby') TM.pendingGrow = PREV[arg];
+      if (ev === 'poop') TM.sfx('beep');
+      if (ev === 'sick') TM.sfx('sad');
+    });
+    TM.sc.go('home');
+
+    // --- input: device buttons ---
+    document.querySelectorAll('[data-btn]').forEach((el) => {
+      el.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        el.classList.add('down');
+        press(el.dataset.btn);
+      });
+      const up = () => el.classList.remove('down');
+      el.addEventListener('pointerup', up);
+      el.addEventListener('pointerleave', up);
+      el.addEventListener('contextmenu', (e) => e.preventDefault());
+    });
+    // --- input: touch the screen ---
+    cv.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      const r = cv.getBoundingClientRect();
+      const x = Math.floor(((e.clientX - r.left) / r.width) * TM.W);
+      const y = Math.floor(((e.clientY - r.top) / r.height) * TM.H);
+      const sc = TM.sc.cur;
+      if (sc && sc.tap) sc.tap(x, y);
+    });
+    // --- input: keyboard ---
+    window.addEventListener('keydown', (e) => {
+      if (e.target && /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+      const k = e.key;
+      let b = null;
+      if (k === 'ArrowLeft' || k === 'a' || k === 'z' || k === 'ArrowRight') b = 'A';
+      if (k === 'Enter' || k === ' ' || k === 'x' || k === 's') b = 'B';
+      if (k === 'Escape' || k === 'Backspace' || k === 'c' || k === 'd') b = 'C';
+      if (b) { e.preventDefault(); press(b); }
+    });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) GM.save(); });
+    window.addEventListener('pagehide', () => GM.save());
+    window.addEventListener('resize', fitScreen);
+    fitScreen();
+    setTimeout(fitScreen, 50);
+
+    // redraw text once the pixel font is ready
+    if (document.fonts && document.fonts.load) {
+      document.fonts.load('16px "DotGothic16"').then(() => G.calibrateFont()).catch(() => {});
+      document.fonts.ready.then(() => G.calibrateFont());
+    }
+    if (TM.debug) TM.debug.init();
+    requestAnimationFrame(frame);
+  };
+})();
+
+</script>
+<script>TM.boot();</script>
