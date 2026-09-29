@@ -1,0 +1,182 @@
+/* DotGothic16 (SIL OFL 1.1, see fonts/OFL.txt) — bundled so the game works offline */
+@font-face {
+  font-family: "DotGothic16";
+  src: url("../fonts/DotGothic16-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+:root {
+  --bg: #fff3f9;
+  --bg2: #ffe3f1;
+  --shell: #ffb6d6;
+  --shell-hi: #ffe0ee;
+  --shell-lo: #f07aad;
+  --frame: #b995f2;
+  --frame-lo: #8d63d6;
+  --ink: #4a2f60;
+  --btn: #fff27e;
+  --btn-lo: #e2b93a;
+  --panel: #ffffff;
+  --line: #f3cfe2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #251b33;
+    --bg2: #2e2140;
+    --ink: #f3e6ff;
+    --panel: #2f2542;
+    --line: #4a3a60;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #251b33;
+  --bg2: #2e2140;
+  --ink: #f3e6ff;
+  --panel: #2f2542;
+  --line: #4a3a60;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  background-image: radial-gradient(var(--bg2) 18%, transparent 19%), radial-gradient(var(--bg2) 18%, transparent 19%);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+  color: var(--ink);
+  font-family: "DotGothic16", "Hiragino Maru Gothic ProN", system-ui, sans-serif;
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: max(12px, env(safe-area-inset-top)) 16px 24px;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ---------------- the egg-shaped device ---------------- */
+.device { position: relative; width: min(92vw, 390px); user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+.shell {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 0.86;
+  border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
+  background:
+    radial-gradient(circle at 30% 18%, var(--shell-hi) 0 10%, transparent 30%),
+    radial-gradient(#ffffff66 14%, transparent 15%) 0 0 / 22px 22px,
+    linear-gradient(160deg, #ffc8e1, var(--shell) 45%, var(--shell-lo));
+  box-shadow:
+    inset -10px -16px 0 #e86aa3aa,
+    inset 10px 12px 0 #ffffff88,
+    0 10px 0 #d65a93,
+    0 18px 30px #c0508844;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 13%;
+}
+.deco { position: absolute; width: 18px; height: 18px; }
+.deco::before { content: "★"; color: #fff7b0; font-size: 18px; text-shadow: 0 2px 0 #e2b93a; }
+.deco-a { left: 12%; top: 16%; }
+.deco-b { right: 13%; top: 12%; transform: scale(0.8); }
+.deco-c { right: 8%; top: 42%; transform: scale(0.7); }
+.frame {
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 22%;
+  background: linear-gradient(160deg, #d6c0ff, var(--frame) 50%, var(--frame-lo));
+  box-shadow: inset 0 4px 0 #ffffff66, inset 0 -5px 0 #6c48b088, 0 4px 0 #c05088;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7%;
+}
+.bezel {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #1c1430;
+  border-radius: 10px;
+  padding: 3%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 3px 6px #000a;
+}
+#screen {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #fff;
+  border-radius: 3px;
+  touch-action: none;
+}
+.buttons { display: flex; gap: 9%; margin-top: 6%; width: 64%; justify-content: center; }
+.btn {
+  width: 19%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 0;
+  background: radial-gradient(circle at 35% 30%, #fffbd8 0 18%, var(--btn) 40%, var(--btn-lo));
+  box-shadow: 0 5px 0 #b88a20, inset 0 -3px 0 #d7a62c;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  transition: transform 0.05s;
+}
+.btn:nth-child(2) { transform: translateY(12%); }
+.btn span {
+  position: absolute; left: 50%; bottom: -46%; transform: translateX(-50%);
+  font: 12px "DotGothic16", monospace; color: #8e2f5c;
+}
+.btn.down { box-shadow: 0 1px 0 #b88a20, inset 0 -1px 0 #d7a62c; transform: translateY(4px); }
+.btn:nth-child(2).down { transform: translateY(calc(12% + 4px)); }
+.chain {
+  position: absolute; left: 50%; top: -14px; width: 26px; height: 26px; transform: translateX(-50%);
+  border-radius: 50%; border: 5px solid #d4c6ea; z-index: -1;
+}
+
+.help { font-size: 12px; margin: 30px 0 8px; text-align: center; opacity: 0.8; }
+.note { font-size: 11px; opacity: 0.6; text-align: center; margin-top: 18px; }
+.tools { display: flex; gap: 8px; }
+.pill {
+  font: 13px "DotGothic16", monospace; color: var(--ink);
+  background: var(--panel); border: 2px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer;
+}
+.pill.on { background: #ffe38a; border-color: #e2b93a; color: #4a2f60; }
+
+/* ---------------- debug panel ---------------- */
+#debug {
+  width: min(100%, 560px);
+  margin-top: 12px;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 13px;
+}
+#debug h3 { margin: 14px 0 6px; font-size: 14px; color: #ff6fa3; border-bottom: 2px dashed var(--line); padding-bottom: 3px; }
+#debug h3:first-child { margin-top: 0; }
+#debug .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0; }
+#debug button, #debug select, #debug input {
+  font: 13px "DotGothic16", monospace; color: var(--ink);
+  background: var(--bg); border: 2px solid var(--line); border-radius: 8px; padding: 4px 8px;
+}
+#debug button { cursor: pointer; }
+#debug button:active { transform: translateY(1px); }
+#debug label { display: inline-flex; gap: 4px; align-items: center; }
+#debug .genes { display: grid; grid-template-columns: auto 1fr; gap: 4px 8px; align-items: center; }
+#debug .genes select { width: 100%; }
+#debug .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+#debug canvas { image-rendering: pixelated; background: #f4ecff; border-radius: 8px; }
+#debug .kids { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+#debug .kid { display: flex; flex-direction: column; align-items: center; font-size: 10px; background: var(--bg); border-radius: 8px; padding: 3px; }
+#debug .src-a { color: #2f6fc0; }
+#debug .src-b { color: #e0508a; }
+#debug .src-m { color: #8a50d8; font-weight: bold; }
+#debug .log { font-size: 11px; opacity: 0.8; }
+@media (max-width: 420px) { #debug .pair { grid-template-columns: 1fr; } }

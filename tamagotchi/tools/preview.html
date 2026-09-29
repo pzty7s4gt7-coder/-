@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><title>Parts Preview</title>
+<style>body{background:#fff6fb;font-family:sans-serif;margin:8px}canvas{image-rendering:pixelated}h3{margin:8px 0 2px}</style>
+</head><body>
+<div id="out"></div>
+<script>TM_DEV = true;</script>
+<script src="../js/core/tm.js"></script>
+<script src="../js/core/pixel.js"></script>
+<script src="../js/data/colors.js"></script>
+<script src="../js/data/parts_head.js"></script>
+<script src="../js/data/parts_eyes.js"></script>
+<script src="../js/data/parts_body.js"></script>
+<script src="../js/data/stages.js"></script>
+<script src="../js/game/look.js"></script>
+<script src="../js/data/foods.js"></script>
+<script src="../js/data/items.js"></script>
+<script src="../js/data/icons.js"></script>
+<script src="../js/data/rooms.js"></script>
+<script src="../js/data/places.js"></script>
+<script>
+// Renders every part in a grid (scale 3) — handy when adding new art.
+const out = document.getElementById('out');
+const S = 3;
+var row = function (title, items) {
+  const h = document.createElement('h3'); h.textContent = title; out.appendChild(h);
+  const cols = Math.min(items.length, 12);
+  const cw = 44, chh = 44;
+  const c = document.createElement('canvas');
+  c.width = cols * cw * S; c.height = Math.ceil(items.length / cols) * chh * S;
+  const x = c.getContext('2d'); x.imageSmoothingEnabled = false;
+  x.fillStyle = '#f4ecff'; x.fillRect(0, 0, c.width, c.height);
+  items.forEach((cv, i) => {
+    const px = (i % cols) * cw, py = Math.floor(i / cols) * chh;
+    x.drawImage(cv, 0, 0, cv.width, cv.height, (px + 2) * S, (py + 2) * S, cv.width * S, cv.height * S);
+  });
+  out.appendChild(c);
+};
+const MISC = location.hash === '#misc';
+if (MISC) { const r0 = row; row = (t, i) => (/food|toys|icons|furniture|items/.test(t) ? r0(t, i) : 0); }
+const base = { color: 'pink', eyes: 'pacchiri', head: 'maru', body: 'futsuu', back: 'none' };
+const g = (o) => Object.assign({}, base, o);
+row('head', TM.ids('head').map((id) => TM.look.canvas(g({ head: id }), 'adult')));
+row('eyes', TM.ids('eyes').map((id) => TM.look.canvas(g({ eyes: id }), 'adult')));
+row('body', TM.ids('body').map((id) => TM.look.canvas(g({ body: id, color: 'sky' }), 'adult')));
+row('back', TM.ids('back').map((id) => TM.look.canvas(g({ back: id, color: 'lemon' }), 'adult')));
+row('color', TM.ids('color').map((id) => TM.look.canvas(g({ color: id, head: 'kurukuru', back: 'tenshi' }), 'adult')));
+row('expr', ['open', 'closed', 'happy', 'sick', 'cry'].map((e) => TM.look.canvas(g({ head: 'neko' }), 'adult', { eyes: e, mouth: e === 'happy' ? 'open' : 'smile' })));
+row('stages', ['egg', 'baby', 'child', 'adult'].flatMap((s) => [TM.look.canvas(g({}), s), TM.look.canvas(g({ head: 'usagi', color: 'mint' }), s), TM.look.canvas(g({ head: 'happa', color: 'lemon', eyes: 'kirakira' }), s)]));
+const rnd = () => { const o = {}; TM.look.GENE_KEYS.forEach((k) => (o[k] = TM.util.pick(TM.ids(k)))); return o; };
+row('random adults', Array.from({ length: 24 }, () => TM.look.canvas(rnd(), 'adult')));
+function sprRow(title, sprs, gp) {
+  row(title, sprs.map((s) => TM.sprCanvas(s, gp)));
+}
+if (TM.list('food').length) sprRow('food', TM.list('food').map((f) => f.spr));
+if (TM.list('toy').length) sprRow('toys', TM.list('toy').map((f) => f.spr));
+if (TM.list('icon').length) sprRow('icons', TM.list('icon').map((f) => f.spr));
+if (TM.list('furniture').length) sprRow('furniture', TM.list('furniture').map((f) => f.spr));
+if (TM.ITEM) sprRow('items', Object.values(TM.ITEM).flat());
+</script>
+</body></html>

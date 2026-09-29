@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#ffd6ea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>たまみーつ</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main id="app">
+  <div class="device">
+    <div class="shell">
+      <div class="deco deco-a"></div><div class="deco deco-b"></div><div class="deco deco-c"></div>
+      <div class="frame">
+        <div class="bezel">
+          <canvas id="screen" width="256" height="256" aria-label="たまごっちの画面"></canvas>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="btn" data-btn="A" aria-label="Aボタン（えらぶ）"><span>A</span></button>
+        <button class="btn" data-btn="B" aria-label="Bボタン（けってい）"><span>B</span></button>
+        <button class="btn" data-btn="C" aria-label="Cボタン（もどる）"><span>C</span></button>
+      </div>
+    </div>
+    <div class="chain"></div>
+  </div>
+  <p class="help">A: えらぶ ・ B: けってい ・ C: もどる ／ がめんを タッチしても あそべるよ</p>
+  <div class="tools">
+    <button id="muteBtn" class="pill">おと: ON</button>
+    <button id="debugBtn" class="pill">デバッグ</button>
+  </div>
+  <section id="debug" hidden></section>
+  <p class="note">ファンメイドの再現作品です（非公式）。ドット絵はすべて手打ち。</p>
+</main>
+
+<!-- core -->
+<script src="js/core/tm.js"></script>
+<script src="js/core/pixel.js"></script>
+<script src="js/core/gfx.js"></script>
+<!-- content (add new files here) -->
+<script src="js/data/colors.js"></script>
+<script src="js/data/parts_head.js"></script>
+<script src="js/data/parts_eyes.js"></script>
+<script src="js/data/parts_body.js"></script>
+<script src="js/data/stages.js"></script>
+<script src="js/data/foods.js"></script>
+<script src="js/data/items.js"></script>
+<script src="js/data/icons.js"></script>
+<script src="js/data/rooms.js"></script>
+<script src="js/data/places.js"></script>
+<!-- game -->
+<script src="js/game/look.js"></script>
+<script src="js/game/genetics.js"></script>
+<script src="js/game/game.js"></script>
+<script src="js/game/engine.js"></script>
+<script src="js/scenes/home.js"></script>
+<script src="js/scenes/care.js"></script>
+<script src="js/scenes/outing.js"></script>
+<script src="js/scenes/info.js"></script>
+<script src="js/game/debug.js"></script>
+<script src="js/game/main.js"></script>
+<script>TM.boot();</script>
+</body>
+</html>
