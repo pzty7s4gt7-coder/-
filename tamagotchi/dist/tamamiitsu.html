@@ -500,23 +500,29 @@ body {
   const tcache = new Map();
   // The pixel font only thresholds cleanly when its dots sit exactly on the
   // pixel grid. Find the sub-pixel offset that gives the least grey pixels.
-  let OFF = { x: 0, y: 0 };
+  // Text is drawn on an alphabetic baseline (browsers disagree about 'top',
+  // which cut glyphs off on iPhone). TOP = measured row of the glyph tops.
+  const TH = 32, BASE = 24;
+  let OFF = { x: 0, y: 0 }, TOP = 10;
   G.calibrateFont = function () {
     const t = document.createElement('canvas');
-    t.width = 200; t.height = 24;
+    t.width = 200; t.height = TH;
     const c = t.getContext('2d');
     let best = 1e18;
     for (let oy = 0; oy < 1; oy += 0.125)
       for (let ox = 0; ox < 1; ox += 0.25) {
-        c.clearRect(0, 0, 200, 24);
+        c.clearRect(0, 0, 200, TH);
         c.font = '16px ' + G.FONT;
-        c.textBaseline = 'top';
+        c.textBaseline = 'alphabetic';
         c.fillStyle = '#000';
-        c.fillText('ドレスあたまごはんパ', 2 + ox, 2 + oy);
-        const d = c.getImageData(0, 0, 200, 24).data;
-        let grey = 0;
-        for (let i = 3; i < d.length; i += 4) grey += d[i] * (255 - d[i]);
-        if (grey < best) { best = grey; OFF = { x: ox, y: oy }; }
+        c.fillText('ドレスあたまごはんパ', 2 + ox, BASE + oy);
+        const d = c.getImageData(0, 0, 200, TH).data;
+        let grey = 0, top = TH;
+        for (let i = 3; i < d.length; i += 4) {
+          grey += d[i] * (255 - d[i]);
+          if (d[i] > 120) top = Math.min(top, Math.floor((i - 3) / 4 / 200));
+        }
+        if (grey < best) { best = grey; OFF = { x: ox, y: oy }; TOP = top; }
       }
     tcache.clear();
   };
@@ -529,15 +535,15 @@ body {
     tctx.font = '16px ' + G.FONT;
     const w = Math.ceil(tctx.measureText(str).width) + 4;
     t.width = w;
-    t.height = 20;
+    t.height = TH;
     tctx.font = '16px ' + G.FONT;
-    tctx.textBaseline = 'top';
+    tctx.textBaseline = 'alphabetic';
     tctx.fillStyle = '#000';
-    tctx.fillText(str, 2 + OFF.x, 2 + OFF.y);
-    const src = tctx.getImageData(0, 0, w, 20);
-    const on = new Uint8Array(w * 20);
+    tctx.fillText(str, 2 + OFF.x, BASE + OFF.y);
+    const src = tctx.getImageData(0, 0, w, TH);
+    const on = new Uint8Array(w * TH);
     for (let i = 0; i < on.length; i++) on[i] = src.data[i * 4 + 3] > 120 ? 1 : 0;
-    const out = tctx.createImageData(w, 20);
+    const out = tctx.createImageData(w, TH);
     const put = (i, hex) => {
       out.data[i * 4] = parseInt(hex.substr(1, 2), 16);
       out.data[i * 4 + 1] = parseInt(hex.substr(3, 2), 16);
@@ -545,14 +551,14 @@ body {
       out.data[i * 4 + 3] = 255;
     };
     if (outline) {
-      for (let y = 0; y < 20; y++)
+      for (let y = 0; y < TH; y++)
         for (let x = 0; x < w; x++) {
           if (on[y * w + x]) continue;
           let n = false;
           for (let dy = -1; dy <= 1 && !n; dy++)
             for (let dx = -1; dx <= 1; dx++) {
               const xx = x + dx, yy = y + dy;
-              if (xx >= 0 && yy >= 0 && xx < w && yy < 20 && on[yy * w + xx]) { n = true; break; }
+              if (xx >= 0 && yy >= 0 && xx < w && yy < TH && on[yy * w + xx]) { n = true; break; }
             }
           if (n) put(y * w + x, outline);
         }
@@ -581,7 +587,7 @@ body {
     else if (o.align === 'right') px -= c._w;
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.drawImage(c, Math.round(px) - 2, Math.round(y * S) - 2);
+    ctx.drawImage(c, Math.round(px) - 2, Math.round(y * S) + 1 - TOP);
     ctx.restore();
   };
 
