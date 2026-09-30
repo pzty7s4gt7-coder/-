@@ -14,7 +14,7 @@ const store = {
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-const CFG = Object.assign({ textSpeed: 32, autoWait: 1400, sound: true, volume: .5, showAff: true }, store.get('hk_cfg') || {});
+const CFG = Object.assign({ textSpeed: 32, autoWait: 1400, sound: true, volume: .5, showAff: true, rotate: true }, store.get('hk_cfg') || {});
 const saveCfg = () => store.set('hk_cfg', CFG);
 
 /* ---------- 定数 ---------- */
@@ -104,11 +104,18 @@ const dayCap = () => Math.max(2, DAY_MAX - 2 * S.mistakes - S.hints);
 /* ---------- 画面 ---------- */
 const stage = $('#stage');
 function fit(){
-  const s = Math.min(innerWidth / 1280, innerHeight / 720);
+  const vp = $('#viewport');
+  const w = vp.clientWidth || innerWidth, h = vp.clientHeight || innerHeight;
+  // 縦持ちのスマホでは、画面を90度回して横画面として表示する
+  const rot = CFG.rotate && h > w * 1.05;
+  const s = rot ? Math.min(h / 1280, w / 720) : Math.min(w / 1280, h / 720);
+  const r = rot ? '90deg' : '0deg';
   stage.style.setProperty('--s', s);
-  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+  stage.style.setProperty('--r', r);
+  stage.style.transform = `translate(-50%,-50%) rotate(${r}) scale(${s})`;
+  stage.classList.toggle('rotated', rot);
 }
-addEventListener('resize', fit); fit();
+addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 200)); fit();
 
 function setBg(name, mode){
   S.bg = { name, mode: mode || '' };
@@ -466,10 +473,11 @@ function openConfig(){
     <label>効果音</label>${tog('sound', 'ON', 'OFF')}
     <label>音量</label><input type="range" min="0" max="1" step=".05" value="${CFG.volume}" data-k="volume">
     <label>好感度の通知</label>${tog('showAff', '表示', '非表示')}
+    <label>縦持ちのとき</label>${tog('rotate', '横に回転', 'そのまま')}
   </div><p class="muted" style="margin-top:18px">好感度の通知を「非表示」にすると、選択肢の手応えが見えなくなります。二周目以降におすすめ。</p>`);
   b.querySelectorAll('input[type=range]').forEach(r => r.oninput = () => { CFG[r.dataset.k] = +r.value; saveCfg(); });
   b.querySelectorAll('.tog').forEach(t => t.querySelectorAll('button').forEach(x => x.onclick = () => {
-    CFG[t.dataset.key] = x.dataset.v === '1'; saveCfg();
+    CFG[t.dataset.key] = x.dataset.v === '1'; saveCfg(); fit();
     t.querySelectorAll('button').forEach(y => y.classList.toggle('on', y === x));
   }));
 }

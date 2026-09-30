@@ -62,4 +62,8 @@ $('#title').addEventListener('click', e => {
   }
 });
 
-toTitle();
+/* 起動（公開ページの更新時は、遊んでいた状態から再開する） */
+const hot = window.claude && window.claude.hot;
+if(hot && hot.snapshot) hot.snapshot(() => (S && $('#title').classList.contains('hidden')) ? { s: JSON.parse(JSON.stringify(S)) } : {});
+const boot = data => { if(data && data.s) resume(data.s); else toTitle(); };
+if(hot && hot.ready) hot.ready(boot); else boot((hot && hot.data) || {});

@@ -16,7 +16,8 @@ body{font-family:var(--sans);color:var(--ink);user-select:none;-webkit-user-sele
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hidden{display:none!important}
 
-#viewport{position:fixed;inset:0;background:#000}
+html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-touch-callout:none}
+#viewport{position:fixed;top:env(safe-area-inset-top,0px);bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px);right:env(safe-area-inset-right,0px);background:#000}
 #stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center center;overflow:hidden;background:#000}
 
 /* ---------- 背景 ---------- */
@@ -197,7 +198,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #fx.whiteout{background:#fff;transition:background .9s}
 #fx.clear{background:transparent;transition:background .9s}
 #stage.shake{animation:stshake .45s}
-@keyframes stshake{20%{transform:translate(-50%,-50%) translate(-8px,3px) scale(var(--s))}40%{transform:translate(-50%,-50%) translate(7px,-4px) scale(var(--s))}60%{transform:translate(-50%,-50%) translate(-5px,2px) scale(var(--s))}80%{transform:translate(-50%,-50%) translate(3px,-1px) scale(var(--s))}}
+@keyframes stshake{20%{transform:translate(-50%,-50%) rotate(var(--r)) scale(var(--s)) translate(-8px,3px)}40%{transform:translate(-50%,-50%) rotate(var(--r)) scale(var(--s)) translate(7px,-4px)}60%{transform:translate(-50%,-50%) rotate(var(--r)) scale(var(--s)) translate(-5px,2px)}80%{transform:translate(-50%,-50%) rotate(var(--r)) scale(var(--s)) translate(3px,-1px)}}
 #stage.glitch #bg-img{animation:glitch .6s steps(3) 2}
 @keyframes glitch{0%{transform:translate(0)}33%{transform:translate(-6px,2px);filter:hue-rotate(90deg) saturate(3)}66%{transform:translate(5px,-3px);filter:invert(.15)}}
 
@@ -326,3 +327,38 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #title .t-menu button:hover::before{width:22px;background:var(--accent)}
 #title .t-menu button:disabled{color:#bbb;cursor:default}
 #title .t-note{position:absolute;left:96px;bottom:24px;z-index:2;font:500 11px var(--sans);letter-spacing:.2em;color:#999}
+
+/* ---------- スマホ（タッチ操作）向け ---------- */
+@media (hover:none),(pointer:coarse){
+  #hs-label{display:none}
+  .hs:hover{background:none;box-shadow:none}
+  .hs:active{background:rgba(232,116,59,.18);box-shadow:inset 0 0 0 2px rgba(232,116,59,.6)}
+  #sysbar{gap:8px;top:12px;right:14px}
+  #sysbar button{font-size:19px;padding:12px 16px;border-radius:6px}
+  #sysbar button[data-sys=hide]{display:none}
+  #ph-right{top:84px;gap:12px}
+  .pbtn{font-size:21px;padding:14px 22px;border-radius:6px}
+  #ph-cap{font-size:15px;padding:9px 14px}
+  #ph-room{font-size:20px}
+  #ph-room small{font-size:13px}
+  .slot{width:88px;height:88px;font-size:38px}
+  .slot small{font-size:13px}
+  #text{font-size:30px;line-height:1.7}
+  #namebox{font-size:21px}
+  #textbox{height:220px;padding:42px 48px 18px}
+  #choices button{font-size:26px;padding:20px 40px;min-width:640px}
+  .lock .keys{grid-template-columns:repeat(3,96px);gap:10px}
+  .lock .keys button{height:66px;font-size:26px}
+  .lock .keys.alpha{grid-template-columns:repeat(9,58px)}
+  .lock .keys.alpha button{height:56px;font-size:22px}
+  .lock .keys.kana{grid-template-columns:repeat(10,54px);gap:6px}
+  .lock .keys.kana button{height:52px;font-size:22px}
+  .m-close{width:56px;height:56px;font-size:30px}
+  .mbtn{font-size:19px;padding:14px 28px}
+  #modal-box{max-height:680px}
+  #title .t-menu button{font-size:26px;padding:10px 0 10px 24px}
+  .slotbtn{padding:16px 18px}
+  .slotbtn b{font-size:16px}.slotbtn span{font-size:16px}
+  .chap button{padding:18px 12px}
+  .cfg{font-size:19px}.cfg .tog button{font-size:17px;padding:10px 18px}
+}
