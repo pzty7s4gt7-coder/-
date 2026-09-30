@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>白室十日 ―篠澤広と、解けない部屋―</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <!-- 背景 -->
+    <div id="bg"><div id="bg-img"></div><div id="bg-tint"></div></div>
+    <!-- 部屋ごとの小物（2D仮配置） -->
+    <div id="deco"></div>
+    <!-- 調べられる場所 -->
+    <div id="hotspots"></div>
+    <!-- 立ち絵 -->
+    <div id="sprite-layer"><img id="hiro" src="assets/hiro.png" alt="篠澤広" draggable="false"></div>
+    <div id="vignette"></div>
+    <div id="fx"></div>
+
+    <!-- 謎解きHUD -->
+    <div id="phud" class="hidden">
+      <div id="ph-room"></div>
+      <div id="ph-right">
+        <div id="ph-cap" title="ミスやヒントで、この日に縮められる距離の上限が下がります"></div>
+        <div id="ph-btns">
+          <button id="btn-note" class="pbtn">手帳</button>
+          <button id="btn-hint" class="pbtn">広に聞く</button>
+          <button id="btn-spots" class="pbtn">調べる場所</button>
+        </div>
+      </div>
+      <div id="inv-wrap">
+        <div id="inv"></div>
+        <button id="btn-inspect" class="pbtn hidden">持ち物を調べる</button>
+      </div>
+    </div>
+    <div id="hs-label"></div>
+
+    <!-- テキストウィンドウ -->
+    <div id="textbox" class="hidden">
+      <div id="namebox"></div>
+      <div id="text"></div>
+      <div id="next-ind">▼</div>
+    </div>
+    <div id="choices" class="hidden"></div>
+
+    <!-- システムメニュー -->
+    <div id="sysbar" class="hidden">
+      <button data-sys="log">LOG</button>
+      <button data-sys="auto">AUTO</button>
+      <button data-sys="skip">SKIP</button>
+      <button data-sys="save">SAVE</button>
+      <button data-sys="load">LOAD</button>
+      <button data-sys="config">CONFIG</button>
+      <button data-sys="hide">HIDE</button>
+      <button data-sys="title">TITLE</button>
+    </div>
+
+    <div id="card" class="hidden"></div>
+    <div id="toast"></div>
+    <div id="modal" class="hidden"><div id="modal-box"></div></div>
+
+    <!-- タイトル -->
+    <div id="title" class="hidden">
+      <div class="t-bg"></div>
+      <img class="t-hiro" src="assets/hiro.png" alt="">
+      <div class="t-main">
+        <div class="t-sub">篠澤広と、解けない部屋</div>
+        <h1>白室十日</h1>
+        <div class="t-en">TEN DAYS IN THE WHITE ROOM</div>
+        <div class="t-menu">
+          <button data-title="new">はじめから</button>
+          <button data-title="continue">つづきから</button>
+          <button data-title="load">ロード</button>
+          <button data-title="chapter">チャプター選択</button>
+          <button data-title="endings">エンディング記録</button>
+          <button data-title="config">設定</button>
+        </div>
+      </div>
+      <div class="t-note">学園アイドルマスター 二次創作ノベル／脱出ゲーム（試作版）</div>
+    </div>
+  </div>
+</div>
+
+<script src="js/scenario.js"></script>
+<script src="js/rooms.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/puzzle.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
